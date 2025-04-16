@@ -22,7 +22,7 @@ import java.util.Set;
 
 @Slf4j
 @PluginDescriptor(
-        name = "Guardians of the Rift",
+        name = "Guardians of the Rift Optimizer",
         description = "Various utilities to improve and optimize the Guardians of the Rift minigame",
         tags = {"minigame", "overlay", "guardians of the rift", "gotr", "minmax", "ehp"}
 )
