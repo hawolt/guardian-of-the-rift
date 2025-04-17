@@ -1,7 +1,7 @@
 package com.hawolt.gotr;
 
 public interface Slice {
-    public void startup();
+    void startup();
 
-    public void shutdown();
+    void shutdown();
 }
