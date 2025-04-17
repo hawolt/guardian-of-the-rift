@@ -8,8 +8,11 @@ import com.hawolt.gotr.events.RenderSafetyEvent;
 import com.hawolt.gotr.events.minigame.impl.MinigameStateEvent;
 import lombok.AccessLevel;
 import lombok.Getter;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.GameState;
 import net.runelite.api.MenuAction;
+import net.runelite.api.events.ChatMessage;
+import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ScriptPostFired;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.eventbus.EventBus;
@@ -22,6 +25,8 @@ import net.runelite.client.ui.overlay.components.LineComponent;
 
 import javax.inject.Inject;
 import java.awt.*;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 public class StartTimeOverlay extends OverlayPanel implements Slice {
@@ -62,7 +67,7 @@ public class StartTimeOverlay extends OverlayPanel implements Slice {
                 new OverlayMenuEntry(
                         MenuAction.RUNELITE_OVERLAY_CONFIG,
                         OverlayManager.OPTION_CONFIGURE,
-                        "Guardians of the Rift"
+                        "Guardians of the Rift Timer"
                 )
         );
     }
@@ -75,31 +80,42 @@ public class StartTimeOverlay extends OverlayPanel implements Slice {
     @Override
     public Dimension render(Graphics2D graphics2D) {
         if (renderSafetyEvent == null) return null;
-        if (!renderSafetyEvent.isInGame() || renderSafetyEvent.isVolatileState()) return null;
         if (!isFallBackRenderRequired) return null;
-        this.renderWhenSecure();
-        return super.render(graphics2D);
-    }
-
-    public void renderWhenSecure() {
+        if (!renderSafetyEvent.isInGame() || renderSafetyEvent.isVolatileState()) return null;
         long secondsUntilGameStart = TimeUnit.MILLISECONDS.toSeconds(
                 gameWillStartAtTimestamp - System.currentTimeMillis() + StaticConstant.GAME_TICK_DURATION
         );
+        String timeUntilGameStart = secondsUntilGameStart < 0 ? "?" : String.valueOf(secondsUntilGameStart);
         this.panelComponent.getChildren().add(
                 LineComponent.builder()
                         .left("Game Starting in:")
-                        .right(String.valueOf(secondsUntilGameStart))
+                        .right(timeUntilGameStart)
                         .build()
         );
+        return super.render(graphics2D);
     }
 
     @Subscribe
     public void onMinigameStateEvent(MinigameStateEvent event) {
         this.minigameState = event.getCurrentMinigameState();
-        if (minigameState == MinigameState.CLOSING) {
+        if (minigameState == MinigameState.CLOSING && event.getPreviousMinigameState() == MinigameState.COMPLETE) {
             this.gameWillStartAtTimestamp = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(60);
-        } else if (minigameState == MinigameState.CLOSED) {
+        } else if (minigameState == MinigameState.CLOSED && event.getPreviousMinigameState() == MinigameState.CLOSING) {
             this.gameWillStartAtTimestamp = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(30);
+        }
+    }
+
+    @Subscribe
+    public void onChatMessage(ChatMessage message) {
+        if (!renderSafetyEvent.isInGame()) return;
+        if (message.getType() != ChatMessageType.SPAM && message.getType() != ChatMessageType.GAMEMESSAGE) return;
+        String content = message.getMessage();
+        if (content.contains("The rift will become active in 30 seconds.")) {
+            this.gameWillStartAtTimestamp = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(30);
+        } else if (content.contains("The rift will become active in 10 seconds.")) {
+            this.gameWillStartAtTimestamp = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(10);
+        } else if (content.contains("The rift will become active in 5 seconds.")) {
+            this.gameWillStartAtTimestamp = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(5);
         }
     }
 
@@ -110,16 +126,17 @@ public class StartTimeOverlay extends OverlayPanel implements Slice {
     }
 
     @Subscribe
+    public void onGameTick(GameTick tick) {
+        if (renderSafetyEvent == null) return;
+        this.isFallBackRenderRequired = !renderSafetyEvent.isWidgetVisible() && renderSafetyEvent.isInGame();
+    }
+
+    @Subscribe
     public void onScriptPostFired(ScriptPostFired event) {
         if (minigameState != MinigameState.CLOSING && minigameState != MinigameState.CLOSED) return;
         int scriptId = event.getScriptId();
         if (scriptId != StaticConstant.MINIGAME_HUD_UPDATE_SCRIPT_ID) return;
         if (!plugin.getConfig().isShowGameStartTimer()) return;
-        Widget baseWidget = plugin.getClient().getWidget(
-                StaticConstant.MINIGAME_WIDGET_GROUP_ID,
-                StaticConstant.MINIGAME_WIDGET_CHILD_GAME_ID
-        );
-        this.isFallBackRenderRequired = baseWidget == null;
         if (isFallBackRenderRequired) return;
         this.handleGameStartUpdate();
     }
@@ -137,9 +154,10 @@ public class StartTimeOverlay extends OverlayPanel implements Slice {
         long secondsUntilGameStart = TimeUnit.MILLISECONDS.toSeconds(
                 gameWillStartAtTimestamp - System.currentTimeMillis() + StaticConstant.GAME_TICK_DURATION
         );
+        String timeUntilGameStart = secondsUntilGameStart < 0 ? "?" : String.valueOf(secondsUntilGameStart);
         String textContent = textWidget.getText();
         if (!textContent.contains("Power")) return;
-        String updated = String.format("Game Starting in: %s", secondsUntilGameStart);
+        String updated = String.format("Game Starting in: %s", timeUntilGameStart);
         textWidget.setText(updated);
         textWidget.revalidate();
     }
