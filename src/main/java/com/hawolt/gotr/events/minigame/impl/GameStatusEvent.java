@@ -13,4 +13,12 @@ public class GameStatusEvent extends AbstractMinigameEvent {
         super(clientTick);
         this.isGameWon = isGameWon;
     }
+
+    @Override
+    public String toString() {
+        return "GameStatusEvent{" +
+                "isGameWon=" + isGameWon +
+                ", clientTick=" + clientTick +
+                '}';
+    }
 }

@@ -11,4 +11,12 @@ public class TickTimestampEvent {
         this.timestamp = timestamp;
         this.tick = tick;
     }
+
+    @Override
+    public String toString() {
+        return "TickTimestampEvent{" +
+                "timestamp=" + timestamp +
+                ", tick=" + tick +
+                '}';
+    }
 }

@@ -6,9 +6,16 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public abstract class AbstractMinigameEvent {
 
-    private final int clientTick;
+    protected final int clientTick;
 
     public AbstractMinigameEvent(int clientTick) {
         this.clientTick = clientTick;
+    }
+
+    @Override
+    public String toString() {
+        return "AbstractMinigameEvent{" +
+                "clientTick=" + clientTick +
+                '}';
     }
 }

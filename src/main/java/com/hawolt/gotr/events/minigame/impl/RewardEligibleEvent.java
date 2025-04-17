@@ -9,4 +9,11 @@ public class RewardEligibleEvent extends AbstractMinigameEvent {
     public RewardEligibleEvent(int clientTick) {
         super(clientTick);
     }
+
+    @Override
+    public String toString() {
+        return "RewardEligibleEvent{" +
+                "clientTick=" + clientTick +
+                '}';
+    }
 }

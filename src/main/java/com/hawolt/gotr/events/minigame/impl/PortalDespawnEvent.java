@@ -9,4 +9,11 @@ public class PortalDespawnEvent extends AbstractMinigameEvent {
     public PortalDespawnEvent(int clientTick) {
         super(clientTick);
     }
+
+    @Override
+    public String toString() {
+        return "PortalDespawnEvent{" +
+                "clientTick=" + clientTick +
+                '}';
+    }
 }

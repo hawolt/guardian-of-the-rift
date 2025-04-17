@@ -19,4 +19,14 @@ public class ObeliskUpdateEvent extends AbstractMinigameEvent {
         this.catalyticRuneEnumIndex = catalyticRuneEnumIndex;
         this.remainingTicksUntilUpdate = remainingTicksUntilUpdate;
     }
+
+    @Override
+    public String toString() {
+        return "ObeliskUpdateEvent{" +
+                "elementalRuneEnumIndex=" + elementalRuneEnumIndex +
+                ", catalyticRuneEnumIndex=" + catalyticRuneEnumIndex +
+                ", remainingTicksUntilUpdate=" + remainingTicksUntilUpdate +
+                ", clientTick=" + clientTick +
+                '}';
+    }
 }

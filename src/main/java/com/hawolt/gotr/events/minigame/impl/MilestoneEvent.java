@@ -9,4 +9,13 @@ public class MilestoneEvent extends AbstractMinigameEvent {
     public MilestoneEvent(int clientTick) {
         super(clientTick);
     }
+
+    @Override
+    public String toString() {
+        return "MilestoneEvent{" +
+                "clientTick=" + clientTick +
+                '}';
+    }
+
+
 }

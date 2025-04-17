@@ -14,4 +14,13 @@ public class MinigameStateEvent extends AbstractMinigameEvent {
         this.currentMinigameState = currentMinigameState;
         this.previousMinigameState = previousMinigameState;
     }
+
+    @Override
+    public String toString() {
+        return "MinigameStateEvent{" +
+                "currentMinigameState=" + currentMinigameState +
+                ", previousMinigameState=" + previousMinigameState +
+                ", clientTick=" + clientTick +
+                '}';
+    }
 }

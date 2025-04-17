@@ -12,4 +12,12 @@ public class GuardianSpawnEvent extends AbstractMinigameEvent {
         super(clientTick);
         this.currentAmountOfGuardians = currentAmountOfGuardians;
     }
+
+    @Override
+    public String toString() {
+        return "GuardianSpawnEvent{" +
+                "currentAmountOfGuardians=" + currentAmountOfGuardians +
+                ", clientTick=" + clientTick +
+                '}';
+    }
 }

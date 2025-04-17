@@ -11,4 +11,12 @@ public class EssenceAmountUpdateEvent {
         this.previous = previous;
         this.current = current;
     }
+
+    @Override
+    public String toString() {
+        return "EssenceAmountUpdateEvent{" +
+                "previous=" + previous +
+                ", current=" + current +
+                '}';
+    }
 }

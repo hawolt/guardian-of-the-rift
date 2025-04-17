@@ -13,4 +13,12 @@ public class PortalSpawnEvent extends AbstractMinigameEvent {
         super(clientTick);
         this.ticksUntilDespawn = ticksUntilDespawn;
     }
+
+    @Override
+    public String toString() {
+        return "PortalSpawnEvent{" +
+                "ticksUntilDespawn=" + ticksUntilDespawn +
+                ", clientTick=" + clientTick +
+                '}';
+    }
 }

@@ -16,4 +16,14 @@ public class PointGainedEvent extends AbstractMinigameEvent {
         this.gained = gained;
         this.total = total;
     }
+
+    @Override
+    public String toString() {
+        return "PointGainedEvent{" +
+                "runeType=" + runeType +
+                ", gained=" + gained +
+                ", total=" + total +
+                ", clientTick=" + clientTick +
+                '}';
+    }
 }

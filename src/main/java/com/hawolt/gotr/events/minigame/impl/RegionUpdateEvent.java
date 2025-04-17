@@ -13,4 +13,13 @@ public class RegionUpdateEvent extends AbstractMinigameEvent {
         this.previousRegionId = previousRegionId;
         this.currentRegionId = currentRegionId;
     }
+
+    @Override
+    public String toString() {
+        return "RegionUpdateEvent{" +
+                "currentRegionId=" + currentRegionId +
+                ", previousRegionId=" + previousRegionId +
+                ", clientTick=" + clientTick +
+                '}';
+    }
 }
