@@ -419,6 +419,17 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
         return true;
     }
 
+    @ConfigItem(
+            keyName = "showPointStatusInfobox",
+            name = "Point Status Infobox",
+            description = "Display an additional Infobox with a minigame Point Status",
+            position = 4,
+            section = miscellaneousConfiguration
+    )
+    default boolean isShowPointStatusInfobox() {
+        return true;
+    }
+
     @ConfigSection(
             position = 5,
             name = "The Great Guardian",
@@ -746,7 +757,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     default int depositPoolOutlineFeatherDistance() {
         return 5;
     }
-    
+
     @ConfigSection(
             position = 10,
             name = "Debugging",
