@@ -74,6 +74,7 @@ public class ObeliskSlice extends AbstractPluginSlice {
         if (currentRegionId != StaticConstant.MINIGAME_REGION_ID) return;
         WorldPoint current = client.getLocalPlayer().getWorldLocation();
         if (minigameState == MinigameState.CLOSING || minigameState == MinigameState.CLOSED) return;
+        if (renderSafetyEvent == null || !renderSafetyEvent.isWidgetVisible()) return;
         if (worldPoint == null || !worldPoint.equals(current)) {
             this.updateObeliskEfficiencyWeight();
         }
