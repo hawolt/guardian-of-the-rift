@@ -13,6 +13,8 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ScriptPreFired;
 import net.runelite.client.eventbus.Subscribe;
 
+import java.util.Arrays;
+
 public class MinigameSlice extends AbstractPluginSlice {
 
     @Getter(AccessLevel.NONE)
@@ -164,6 +166,7 @@ public class MinigameSlice extends AbstractPluginSlice {
 
     private void handleInternalGameEvent() {
         this.handleMilestoneEvent();
+        this.handlePointResetEvent();
         this.handlePortalSpawnEvent();
         this.handleObeliskUpdateEvent();
         this.handleGuardianSpawnEvent();
@@ -205,6 +208,12 @@ public class MinigameSlice extends AbstractPluginSlice {
     private void handlePortalSpawnEvent() {
         if (internalPortalLocation <= 0 || portalLocation > 0) return;
         this.bus.post(new PortalSpawnEvent(internalCurrentClientTick, internalPortalTicksRemaining));
+    }
+
+    private void handlePointResetEvent() {
+        if (internalElementalEnergy >= elementalEnergy) return;
+        if (internalCatalyticEnergy >= catalyticEnergy) return;
+        this.bus.post(new PointResetEvent(internalCurrentClientTick));
     }
 
     private void handleElementalPointGainEvent() {
