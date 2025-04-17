@@ -63,10 +63,11 @@ public class HighlightObeliskOverlay extends AbstractMinigameRenderer {
 
     @Override
     public void renderWhenSecure(Graphics2D graphics2D) {
-        if (!getRenderSafetyEvent().isMinigameWidgetVisible()) return;
+        if (!getRenderSafetyEvent().isWidgetAvailable()) return;
         GuardianOfTheRiftOptimizerConfig config = plugin.getConfig();
         ObeliskAnalysis[] optimalObelisks = map.get(ObeliskType.OPTIMAL);
         ObeliskAnalysis[] secondaryObelisks = map.get(ObeliskType.SECONDARY);
+        if (optimalObelisks == null || secondaryObelisks == null) return;
         for (ObeliskAnalysis optimal : optimalObelisks) {
             this.handleGuardianOutlineRender(
                     optimal,
