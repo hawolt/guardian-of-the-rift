@@ -160,4 +160,17 @@ public class ObeliskAnalysis {
         return (amount % 2 == 0) ? amount : amount + 1;
     }
 
+    @Override
+    public String toString() {
+        return "ObeliskAnalysis{" +
+                "runeCraftInfo=" + runeCraftInfo +
+                ", obelisk=" + obelisk +
+                ", weightedEfficiency=" + weightedEfficiency +
+                ", remainingTicksUntilUpdate=" + remainingTicksUntilUpdate +
+                ", currentClientTick=" + currentClientTick +
+                ", normalizedTileDistance=" + normalizedTileDistance +
+                ", isTalismanAvailable=" + isTalismanAvailable +
+                ", isDowngradeBetter=" + isDowngradeBetter +
+                '}';
+    }
 }
