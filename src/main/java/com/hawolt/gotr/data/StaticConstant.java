@@ -9,12 +9,22 @@ import java.util.stream.Collectors;
 
 public class StaticConstant {
 
+    // REGEXP
+    public static String MINIGAME_POINT_STATUS_TOTAL =
+            "Total elemental energy:[^>]+>([\\d,]+).*Total catalytic energy:[^>]+>([\\d,]+).*?\\.";
+    public static String MINIGAME_POINT_STATUS_GAINED =
+            "Elemental energy attuned:[^>]+>([\\d,]+).*Catalytic energy attuned:[^>]+>([\\d,]+).*?\\.";
+    public static String MINIGAME_POINT_STATUS_CHECKUP =
+            "You have (\\d+) catalytic energy and (\\d+) elemental energy";
+
     // GAME MISC
     public static final long GAME_TICK_DURATION = 600L;
     public static final int INVENTORY_CONTAINER_ID = 93;
     public static final int BINDING_NECKLACE_VARP_ID = 487;
     public static final int BINDING_NECKLACE_ITEM_ID = 5521;
     public static final int MINIGAME_PORTAL_SPRITE_ID = 4368;
+    public static final int GAME_DIALOG_WIDGET_GROUP = 229;
+    public static final int GAME_DIALOG_WIDGET_CONTENT = 1;
 
     // MINIGAME INTERNALS
     public static final int MINIGAME_REGION_ID = 14484;
