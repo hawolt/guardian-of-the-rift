@@ -16,6 +16,7 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.OverlayPanel;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,6 +28,11 @@ import java.util.Set;
         tags = {"minigame", "overlay", "guardians of the rift", "gotr", "minmax", "ehp"}
 )
 public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
+
+    @Getter
+    @Inject
+    @Named("developerMode")
+    private boolean developerMode;
 
     @Inject
     @Getter(AccessLevel.PUBLIC)
@@ -41,6 +47,11 @@ public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
 
     @Inject
     private EventBus bus;
+
+    // DEBUG SLICE
+
+    @Inject
+    private EventDebugSlice eventDebugSlice;
 
     // PLUGIN SLICES
 
@@ -86,6 +97,9 @@ public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
     private TickTimestampSlice tickTimestampSlice;
 
     @Inject
+    private PointStatusOverlay pointStatusOverlay;
+
+    @Inject
     private RenderSafetySlice renderSafetySlice;
 
     @Inject
@@ -128,6 +142,7 @@ public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
 
     @Override
     protected void startUp() throws Exception {
+        if (developerMode) this.add(eventDebugSlice);
         this.add(
                 bindingNecklaceIndicatorOverlay,
                 highlightGreatGuardianOverlay,
@@ -138,6 +153,7 @@ public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
                 portalIndicatorOverlay,
                 inventoryEssenceSlice,
                 bindingNecklaceSlice,
+                pointStatusOverlay,
                 depositPoolOverlay,
                 tickTimestampSlice,
                 renderSafetySlice,
