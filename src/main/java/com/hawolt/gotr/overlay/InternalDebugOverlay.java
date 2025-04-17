@@ -61,6 +61,7 @@ public class InternalDebugOverlay extends AbstractMinigameRenderer {
         GuardianOfTheRiftOptimizerConfig config = plugin.getConfig();
         ObeliskAnalysis[] optimalObelisks = map.get(ObeliskType.OPTIMAL);
         ObeliskAnalysis[] secondaryObelisks = map.get(ObeliskType.SECONDARY);
+        if (optimalObelisks == null || secondaryObelisks == null) return;
         for (ObeliskAnalysis optimal : optimalObelisks) {
             handleTilePath(
                     optimal,

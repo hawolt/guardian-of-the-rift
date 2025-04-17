@@ -49,7 +49,7 @@ public class HighlightDepositPoolOverlay extends AbstractMinigameRenderer {
     @Override
     public void renderWhenSecure(Graphics2D graphics2D) {
         if (depositPool == null) return;
-        if (!getRenderSafetyEvent().isMinigameWidgetVisible()) return;
+        if (!getRenderSafetyEvent().isWidgetAvailable()) return;
         GuardianOfTheRiftOptimizerConfig config = plugin.getConfig();
         if (!config.isDepositPoolOutlineEnabled()) return;
         try {

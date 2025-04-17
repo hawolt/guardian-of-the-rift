@@ -102,7 +102,7 @@ public class HighlightPortalOverlay extends AbstractMinigameRenderer {
     public void onGameTick(GameTick tick) {
         WorldPoint current = plugin.getClient().getLocalPlayer().getWorldLocation();
         RenderSafetyEvent renderSafetyEvent = getRenderSafetyEvent();
-        if (!renderSafetyEvent.isMinigameWidgetVisible()) return;
+        if (!renderSafetyEvent.isWidgetAvailable()) return;
         if (worldPoint == null || !worldPoint.equals(current)) {
             this.updatePathToPortal();
         }
@@ -113,7 +113,7 @@ public class HighlightPortalOverlay extends AbstractMinigameRenderer {
     public void onGameObjectSpawned(GameObjectSpawned event) {
         GameObject gameObject = event.getGameObject();
         if (gameObject.getId() != StaticConstant.MINIGAME_PORTAL_OBJECT_ID) return;
-        if (!getRenderSafetyEvent().isMinigameWidgetVisible()) return;
+        if (!getRenderSafetyEvent().isWidgetAvailable()) return;
         this.plugin.getClient().setHintArrow(gameObject.getWorldLocation());
         this.portal = gameObject;
         this.updatePathToPortal();
@@ -136,7 +136,7 @@ public class HighlightPortalOverlay extends AbstractMinigameRenderer {
     @Override
     public void renderWhenSecure(Graphics2D graphics2D) {
         if (portal == null) return;
-        if (!getRenderSafetyEvent().isMinigameWidgetVisible()) return;
+        if (!getRenderSafetyEvent().isWidgetAvailable()) return;
         GuardianOfTheRiftOptimizerConfig config = plugin.getConfig();
         this.renderPortalOutline(config);
         this.renderPortalTime(config, graphics2D);

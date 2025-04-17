@@ -76,7 +76,7 @@ public class BindingNecklaceIndicatorOverlay extends AbstractMinigameRenderer {
     public Dimension render(Graphics2D graphics2D) {
         if (blank == null) return null;
         if (getRenderSafetyEvent() == null) return null;
-        if (!getRenderSafetyEvent().isMinigameWidgetVisible() || getRenderSafetyEvent().isVolatileState()) return null;
+        if (!getRenderSafetyEvent().isWidgetAvailable() || getRenderSafetyEvent().isVolatileState()) return null;
         this.renderWhenSecure(graphics2D);
         return null;
     }
