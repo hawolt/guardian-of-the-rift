@@ -17,11 +17,15 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 
 public class PathfinderSlice extends AbstractPluginSlice {
     @Inject
     private Client client;
+
+    @Inject
+    private ScheduledExecutorService executor;
 
     @Getter(AccessLevel.PUBLIC)
     private final List<WorldArea> blockedWorldAreaByNPC = new ArrayList<>();
@@ -31,8 +35,10 @@ public class PathfinderSlice extends AbstractPluginSlice {
 
     @Override
     protected void startUp() {
-        this.objectBlocking = load("/loc_blocking.txt");
-        this.npcBlocking = load("/npc_blocking.txt");
+        this.executor.execute(() -> {
+            this.objectBlocking = load("/loc_blocking.txt");
+            this.npcBlocking = load("/npc_blocking.txt");
+        });
     }
 
     @Override
@@ -43,6 +49,7 @@ public class PathfinderSlice extends AbstractPluginSlice {
 
     @Subscribe
     public void onGameTick(GameTick tick) {
+        if (objectBlocking == null || npcBlocking == null) return;
         this.updateBlockedByNPC();
     }
 

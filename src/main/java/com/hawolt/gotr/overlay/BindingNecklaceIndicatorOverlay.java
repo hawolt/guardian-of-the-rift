@@ -18,11 +18,15 @@ import javax.inject.Inject;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class BindingNecklaceIndicatorOverlay extends AbstractMinigameRenderer {
 
     @Inject
     private ItemManager itemManager;
+
+    @Inject
+    private ScheduledExecutorService executor;
 
     @Getter(AccessLevel.NONE)
     private final int SPRITE_DIMENSION_HEIGHT = 32;
@@ -48,17 +52,16 @@ public class BindingNecklaceIndicatorOverlay extends AbstractMinigameRenderer {
     @Override
     public void startup() {
         super.startup();
-        try (InputStream inputStream = BindingNecklaceIndicatorOverlay.class.getResourceAsStream("/blank_sprite.png")) {
-            if (inputStream == null) return;
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-            for (int result = bufferedInputStream.read(); result != -1; result = bufferedInputStream.read()) {
-                buffer.write((byte) result);
+        this.executor.execute(()->{
+            try (InputStream inputStream = BindingNecklaceIndicatorOverlay.class.getResourceAsStream("/blank_sprite.png")) {
+                if (inputStream == null) return;
+                synchronized (ImageIO.class){
+                    this.blank = ImageIO.read(inputStream);
+                }
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
             }
-            this.blank = ImageIO.read(new ByteArrayInputStream(buffer.toByteArray()));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        });
     }
 
     @Override
