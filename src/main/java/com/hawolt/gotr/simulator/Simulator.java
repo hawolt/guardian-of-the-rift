@@ -54,15 +54,4 @@ public class Simulator {
                 runeCraftInfo
         );
     }
-
-    public static void main(String[] args) {
-        Simulator simulator = Simulator.createInstance(
-                23,
-                2,
-                80,
-                1,
-                RuneCraftInfo.LAVA_CRAFTED_ON_EARTH
-        );
-        System.out.println(simulator.simulateTotalCraftedRunes());
-    }
 }
