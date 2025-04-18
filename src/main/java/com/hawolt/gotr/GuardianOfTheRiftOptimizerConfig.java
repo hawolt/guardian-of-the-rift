@@ -343,7 +343,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             section = menuSwappingConfiguration
     )
     default boolean isHideGuardianAssembleNoMaterial() {
-        return false;
+        return true;
     }
 
     @ConfigItem(
@@ -358,10 +358,21 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "hideUseOptionOnPlayer",
+            name = "Hide Use on Player for Runes",
+            description = "Hides the Use Option on other Players for any rune",
+            position = 5,
+            section = menuSwappingConfiguration
+    )
+    default boolean isHideUseOptionOnPlayer() {
+        return true;
+    }
+
+    @ConfigItem(
             keyName = "hideDepositPoolDepositOption",
             name = "Hide Deposit (Deposit Pool)",
             description = "Hides the left click Deposit option",
-            position = 5,
+            position = 6,
             section = menuSwappingConfiguration
     )
     default boolean isHideDepositPoolDepositOption() {

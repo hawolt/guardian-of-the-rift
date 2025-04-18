@@ -3,6 +3,7 @@ package com.hawolt.gotr.slices;
 import com.hawolt.gotr.AbstractPluginSlice;
 import com.hawolt.gotr.GuardianOfTheRiftOptimizerConfig;
 import com.hawolt.gotr.data.StaticConstant;
+import com.hawolt.gotr.events.RenderSafetyEvent;
 import com.hawolt.gotr.events.minigame.impl.GuardianDespawnEvent;
 import com.hawolt.gotr.events.minigame.impl.GuardianSpawnEvent;
 import com.hawolt.gotr.events.minigame.impl.RegionUpdateEvent;
@@ -18,7 +19,10 @@ import java.util.Arrays;
 public class MenuOptionSlice extends AbstractPluginSlice {
 
     @Getter(AccessLevel.NONE)
-    private int currentRegionId, currentGuardianAmount;
+    private int currentGuardianAmount;
+
+    @Getter(AccessLevel.NONE)
+    private RenderSafetyEvent renderSafetyEvent;
 
     @Override
     protected void startUp() {
@@ -31,8 +35,8 @@ public class MenuOptionSlice extends AbstractPluginSlice {
     }
 
     @Subscribe
-    public void onRegionUpdateEvent(RegionUpdateEvent event) {
-        this.currentRegionId = event.getCurrentRegionId();
+    public void onRenderSafetyEvent(RenderSafetyEvent renderSafetyEvent) {
+        this.renderSafetyEvent = renderSafetyEvent;
     }
 
     @Subscribe
@@ -47,7 +51,8 @@ public class MenuOptionSlice extends AbstractPluginSlice {
 
     @Subscribe
     public void onPostMenuSort(PostMenuSort event) {
-        if (currentRegionId != StaticConstant.MINIGAME_REGION_ID) return;
+        if (renderSafetyEvent == null) return;
+        if (!renderSafetyEvent.isWidgetAvailable()) return;
         if (client.isMenuOpen()) return;
         InventorySlice inventorySlice = plugin.getInventoryEssenceSlice();
         GuardianOfTheRiftOptimizerConfig config = plugin.getConfig();
@@ -58,8 +63,24 @@ public class MenuOptionSlice extends AbstractPluginSlice {
         entries = handleGuardianPowerUp(config, inventorySlice, entries);
         entries = handleGuardianAssembleAllActive(config, entries);
         entries = handleDepositPoolDepositOption(config, entries);
+        entries = handleUseOptionOnPlayer(config, entries);
         entries = handleApprenticeTalkTo(config, entries);
         menu.setMenuEntries(entries);
+    }
+
+    private MenuEntry[] handleUseOptionOnPlayer(
+            GuardianOfTheRiftOptimizerConfig config,
+            MenuEntry[] entries
+    ) {
+        return config.isHideUseOptionOnPlayer() ?
+                Arrays.stream(entries)
+                        .filter(
+                                entry ->
+                                        !entry.getTarget().contains(" rune") ||
+                                                entry.getPlayer() == null ||
+                                                !entry.getOption().equals("Use")
+                        ).toArray(MenuEntry[]::new) :
+                entries;
     }
 
     private MenuEntry[] handleDepositPoolDepositOption(
