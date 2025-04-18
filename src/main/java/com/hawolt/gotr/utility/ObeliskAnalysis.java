@@ -6,6 +6,7 @@ import com.hawolt.gotr.data.RuneCraftInfo;
 import com.hawolt.gotr.data.StaticConstant;
 import com.hawolt.gotr.pathfinding.PathCreator;
 import com.hawolt.gotr.pathfinding.Pathfinder;
+import com.hawolt.gotr.simulator.Simulator;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.runelite.api.GameObject;
@@ -66,10 +67,6 @@ public class ObeliskAnalysis {
         return Objects.hashCode(obelisk);
     }
 
-    /**
-     * todo math is not perfectly correct currently,
-     * binding necklace charges and essence remaining in inventory are not properly accounted for
-     */
     private double calculateEfficiency() {
         Pathfinder pathfinder = new Pathfinder(plugin);
         Pair<List<WorldPoint>, Boolean> pathPair = PathCreator.pathTo(pathfinder, gameObject);
@@ -87,14 +84,18 @@ public class ObeliskAnalysis {
         int availableEmptyInventorySlots = plugin.getInventoryEssenceSlice().getEmptyInventorySlots();
         int availableEssenceInPouches = plugin.getPouchEssenceSlice().getAvailableEssenceInPouches();
         int availableEssenceInInventory = plugin.getInventoryEssenceSlice().getEssenceInInventory();
+        int bindingNecklaceCharges = plugin.getBindingNecklaceSlice().getBindingNecklaceCharges();
 
-        int totalRunesToCraft = !runeCraftInfo.isCombinationRune() ?
-                availableEssenceInInventory + availableEssenceInPouches :
-                calculateCraftableCombinationRuneAmount(
-                        availableEssenceInPouches,
-                        availableEssenceInInventory,
-                        availableEmptyInventorySlots
-                );
+        Simulator simulator = Simulator.createInstance(
+                availableEssenceInInventory,
+                availableEmptyInventorySlots,
+                availableEssenceInPouches,
+                bindingNecklaceCharges,
+                runeCraftInfo
+        );
+
+        int totalEssence = availableEssenceInInventory + availableEssenceInPouches;
+        double totalRuneYield = simulator.simulateTotalCraftedRunes();
 
         int outside = normalizeTileCount(pathToGuardian.size());
         int inside = normalizeTileCount(obelisk.getTileDistance()) << 1;
@@ -105,12 +106,11 @@ public class ObeliskAnalysis {
         this.normalizedTileDistance = outside;
 
         long timeToWalk = (outside + inside) * StaticConstant.GAME_TICK_DURATION;
-        if (timeToWalk == 0) return -1;
 
-        double baseExperienceYield = (cellExperienceReward + (runeCraftInfo.getBaseExperience() * totalRunesToCraft));
+        double baseExperienceYield = (cellExperienceReward + (runeCraftInfo.getBaseExperience() * totalRuneYield));
 
         double downGradeExperience = runeCraftInfo.isCombinationRune() ?
-                cellExperienceReward + (runeCraftInfo.getBaseRuneCraftInfo().getBaseExperience() * totalRunesToCraft) :
+                cellExperienceReward + (runeCraftInfo.getBaseRuneCraftInfo().getBaseExperience() * totalEssence) :
                 baseExperienceYield;
 
         if (!runeCraftInfo.isCombinationRune()) {
@@ -124,36 +124,6 @@ public class ObeliskAnalysis {
         }
 
         return (baseExperienceYield / (double) timeToWalk) * 100D;
-    }
-
-    private int calculateCraftableCombinationRuneAmount(
-            int availableEssenceInPouches,
-            int availableEssenceInInventory,
-            int availableEmptyInventorySlots
-    ) {
-        int inventoriesToCraft = 1 + (int) Math.ceil(
-                (availableEssenceInPouches / (double) (availableEssenceInPouches + availableEmptyInventorySlots))
-        );
-
-        int bindingNecklaceCharges = plugin.getBindingNecklaceSlice().getBindingNecklaceCharges();
-
-        int inventoriesWithBindingNecklace = Math.min(bindingNecklaceCharges, inventoriesToCraft);
-
-        int inventoriesWithoutBindingNecklace = inventoriesWithBindingNecklace != inventoriesToCraft ?
-                inventoriesToCraft - bindingNecklaceCharges :
-                0;
-
-        int potentialEssenceInInventory = availableEssenceInInventory + availableEmptyInventorySlots;
-
-        int totalRunesToCraftWithoutBindingNecklace = inventoriesWithoutBindingNecklace > 0 ?
-                inventoriesWithoutBindingNecklace * potentialEssenceInInventory :
-                0;
-
-        int totalRunesCraftedWithBindingNecklace = inventoriesWithBindingNecklace > 0 ?
-                (availableEssenceInInventory + availableEssenceInPouches) :
-                inventoriesWithBindingNecklace * potentialEssenceInInventory;
-
-        return totalRunesCraftedWithBindingNecklace + (totalRunesToCraftWithoutBindingNecklace >> 1);
     }
 
     private static int normalizeTileCount(int amount) {
