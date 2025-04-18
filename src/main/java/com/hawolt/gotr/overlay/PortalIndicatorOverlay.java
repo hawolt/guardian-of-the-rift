@@ -4,6 +4,7 @@ import com.hawolt.gotr.GuardianOfTheRiftOptimizerConfig;
 import com.hawolt.gotr.GuardianOfTheRiftOptimizerPlugin;
 import com.hawolt.gotr.data.MinigameState;
 import com.hawolt.gotr.data.StaticConstant;
+import com.hawolt.gotr.events.RenderSafetyEvent;
 import com.hawolt.gotr.events.minigame.impl.MinigameStateEvent;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -80,6 +81,15 @@ public class PortalIndicatorOverlay extends AbstractMinigameRenderer {
             long elapsedSinceLastPortal = absoluteTickCount * StaticConstant.GAME_TICK_DURATION;
             this.lastPortalDespawnTimestamp = System.currentTimeMillis() - elapsedSinceLastPortal;
         }
+    }
+
+    @Override
+    public Dimension render(Graphics2D graphics2D) {
+        RenderSafetyEvent renderSafetyEvent = getRenderSafetyEvent();
+        if (renderSafetyEvent == null) return null;
+        if (!renderSafetyEvent.isWidgetAvailable() || renderSafetyEvent.isVolatileState()) return null;
+        this.renderWhenSecure(graphics2D);
+        return null;
     }
 
     @Override
