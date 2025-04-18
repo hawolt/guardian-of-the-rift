@@ -113,7 +113,6 @@ public class HighlightPortalOverlay extends AbstractMinigameRenderer {
     public void onGameObjectSpawned(GameObjectSpawned event) {
         GameObject gameObject = event.getGameObject();
         if (gameObject.getId() != StaticConstant.MINIGAME_PORTAL_OBJECT_ID) return;
-        if (!getRenderSafetyEvent().isWidgetAvailable()) return;
         this.plugin.getClient().setHintArrow(gameObject.getWorldLocation());
         this.portal = gameObject;
         this.updatePathToPortal();
