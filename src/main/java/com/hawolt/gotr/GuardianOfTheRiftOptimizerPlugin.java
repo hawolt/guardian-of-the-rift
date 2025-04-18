@@ -94,6 +94,9 @@ public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
     private HighlightPortalOverlay highlightPortalOverlay;
 
     @Inject
+    private NecklaceWarningOverlay necklaceWarningOverlay;
+
+    @Inject
     private TickTimestampSlice tickTimestampSlice;
 
     @Inject
@@ -150,6 +153,7 @@ public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
                 highlightGuardianOverlay,
                 highlightCellTileOverlay,
                 highlightPortalOverlay,
+                necklaceWarningOverlay,
                 portalIndicatorOverlay,
                 inventoryEssenceSlice,
                 bindingNecklaceSlice,

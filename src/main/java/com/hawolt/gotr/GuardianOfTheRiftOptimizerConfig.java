@@ -431,10 +431,21 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "showBindingNecklaceWarning",
+            name = "Binding Necklace Altar Warning",
+            description = "Display an indicator on an Elemental Altar when you have no Binding Necklace",
+            position = 4,
+            section = miscellaneousConfiguration
+    )
+    default boolean isShowBindingNecklaceWarning() {
+        return true;
+    }
+
+    @ConfigItem(
             keyName = "showPointStatusInfobox",
             name = "Point Status Infobox",
             description = "Display an additional Infobox with a minigame Point Status",
-            position = 4,
+            position = 5,
             section = miscellaneousConfiguration
     )
     default boolean isShowPointStatusInfobox() {

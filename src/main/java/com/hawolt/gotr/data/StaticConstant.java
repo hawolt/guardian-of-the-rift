@@ -26,6 +26,20 @@ public class StaticConstant {
     public static final int GAME_DIALOG_WIDGET_GROUP = 229;
     public static final int GAME_DIALOG_WIDGET_CONTENT = 1;
 
+    // RUNECRAFT ALTAR IDS
+    public static final int RUNECRAFTING_ALTAR_AIR = 34760;
+    public static final int RUNECRAFTING_ALTAR_COSMIC = 34766;
+    public static final int RUNECRAFTING_ALTAR_WATER = 34762;
+    public static final int RUNECRAFTING_ALTAR_EARTH = 34763;
+    public static final int RUNECRAFTING_ALTAR_NATURE = 34768;
+    public static final int RUNECRAFTING_ALTAR_FIRE = 34764;
+    public static final int RUNECRAFTING_ALTAR_BLOOD = 43479;
+    public static final int RUNECRAFTING_ALTAR_LAW = 34676;
+    public static final int RUNECRAFTING_ALTAR_DEATH = 34770;
+    public static final int RUNECRAFTING_ALTAR_CHAOS = 34769;
+    public static final int RUNECRAFTING_ALTAR_BODY = 34765;
+    public static final int RUNECRAFTING_ALTAR_MIND = 34761;
+
     // MINIGAME INTERNALS
     public static final int MINIGAME_REGION_ID = 14484;
     public static final int MINIGAME_HUD_UPDATE_SCRIPT_ID = 5980;
