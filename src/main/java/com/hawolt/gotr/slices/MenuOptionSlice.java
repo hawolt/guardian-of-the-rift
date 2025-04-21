@@ -91,8 +91,9 @@ public class MenuOptionSlice extends AbstractPluginSlice {
                 Arrays.stream(entries)
                         .filter(
                                 entry ->
-                                        !entry.getOption().contains("Deposit") &&
-                                                !entry.getTarget().contains("Deposit Pool")
+                                        (!entry.getOption().contains("Deposit") &&
+                                                !entry.getTarget().contains("Deposit Pool")) ||
+                                                entry.getTarget().contains(" rune")
                         ).toArray(MenuEntry[]::new) :
                 entries;
     }
