@@ -148,10 +148,19 @@ public class PointStatusOverlay extends OverlayPanel implements Slice {
 
     @Subscribe
     public void onChatMessage(ChatMessage message) {
-        if (message.getType() != ChatMessageType.GAMEMESSAGE) return;
         String content = message.getMessage();
-        checkGainedPointStatus(content);
-        checkTotalPointStatus(content);
+        if (message.getType() == ChatMessageType.GAMEMESSAGE) {
+            checkGainedPointStatus(content);
+            checkTotalPointStatus(content);
+        } else if (message.getType() == ChatMessageType.SPAM) {
+            checkPointsSpent(content);
+        }
+    }
+
+    private void checkPointsSpent(String content) {
+        if (!content.startsWith("You found some loot: ")) return;
+        this.totalElementalRewardPoints -= 1;
+        this.totalCatalyticRewardPoints -= 1;
     }
 
     private void checkTotalPointStatus(String content) {
