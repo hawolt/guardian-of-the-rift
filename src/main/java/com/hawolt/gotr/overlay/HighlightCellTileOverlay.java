@@ -6,8 +6,10 @@ import com.hawolt.gotr.data.ChargeableCellType;
 import com.hawolt.gotr.data.StaticConstant;
 import lombok.AccessLevel;
 import lombok.Getter;
+import net.runelite.api.GameState;
 import net.runelite.api.GroundObject;
 import net.runelite.api.coords.WorldPoint;
+import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GroundObjectSpawned;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.ui.overlay.OverlayLayer;
@@ -38,6 +40,12 @@ public class HighlightCellTileOverlay extends AbstractMinigameRenderer {
         this.setLayer(OverlayLayer.ABOVE_SCENE);
     }
 
+    @Subscribe
+    public void onGameStateChanged(GameStateChanged event) {
+        if (event.getGameState() != GameState.LOADING) return;
+        this.availableCellTypes.clear();
+    }
+    
     @Subscribe
     public void onGroundObjectSpawned(GroundObjectSpawned event) {
         var groundObject = event.getGroundObject();
