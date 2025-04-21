@@ -123,7 +123,7 @@ public class ObeliskAnalysis {
             }
         }
 
-        return (baseExperienceYield / (double) timeToWalk) * 100D;
+        return ((isDowngradeBetter ? downGradeExperience : baseExperienceYield) / (double) timeToWalk) * 100D;
     }
 
     private static int normalizeTileCount(int amount) {
