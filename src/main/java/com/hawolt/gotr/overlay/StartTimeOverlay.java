@@ -25,8 +25,6 @@ import net.runelite.client.ui.overlay.components.LineComponent;
 
 import javax.inject.Inject;
 import java.awt.*;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 public class StartTimeOverlay extends OverlayPanel implements Slice {

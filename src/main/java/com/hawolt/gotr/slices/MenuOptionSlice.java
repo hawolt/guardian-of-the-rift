@@ -2,11 +2,9 @@ package com.hawolt.gotr.slices;
 
 import com.hawolt.gotr.AbstractPluginSlice;
 import com.hawolt.gotr.GuardianOfTheRiftOptimizerConfig;
-import com.hawolt.gotr.data.StaticConstant;
 import com.hawolt.gotr.events.RenderSafetyEvent;
 import com.hawolt.gotr.events.minigame.impl.GuardianDespawnEvent;
 import com.hawolt.gotr.events.minigame.impl.GuardianSpawnEvent;
-import com.hawolt.gotr.events.minigame.impl.RegionUpdateEvent;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.runelite.api.Menu;

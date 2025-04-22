@@ -13,8 +13,6 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ScriptPreFired;
 import net.runelite.client.eventbus.Subscribe;
 
-import java.util.Arrays;
-
 public class MinigameSlice extends AbstractPluginSlice {
 
     @Getter(AccessLevel.NONE)
