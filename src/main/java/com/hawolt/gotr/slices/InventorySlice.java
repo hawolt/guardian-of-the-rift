@@ -46,6 +46,7 @@ public class InventorySlice extends AbstractPluginSlice {
     protected void startUp() {
         this.essenceInInventory = 0;
         this.emptyInventorySlots = 0;
+        if (client.getGameState() != GameState.LOGGED_IN) return;
         this.handle(client.getItemContainer(InventoryID.INV));
     }
 

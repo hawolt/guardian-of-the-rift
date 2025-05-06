@@ -18,6 +18,7 @@ public class EquipmentSlice extends AbstractPluginSlice {
     private boolean isBindingNecklaceEquipped;
 
     protected void startUp() {
+        if (client.getGameState() != GameState.LOGGED_IN) return;
         this.handle(client.getItemContainer(InventoryID.WORN));
     }
 
