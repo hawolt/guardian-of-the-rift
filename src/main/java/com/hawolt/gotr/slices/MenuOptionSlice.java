@@ -8,6 +8,7 @@ import com.hawolt.gotr.events.minigame.impl.GuardianSpawnEvent;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.runelite.api.Menu;
+import net.runelite.api.MenuAction;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.events.PostMenuSort;
 import net.runelite.client.eventbus.Subscribe;
@@ -63,7 +64,20 @@ public class MenuOptionSlice extends AbstractPluginSlice {
         entries = handleDepositPoolDepositOption(config, entries);
         entries = handleUseOptionOnPlayer(config, entries);
         entries = handleApprenticeTalkTo(config, entries);
+        entries = handleRuneUseOption(config, entries);
         menu.setMenuEntries(entries);
+    }
+
+    private MenuEntry[] handleRuneUseOption(GuardianOfTheRiftOptimizerConfig config, MenuEntry[] entries) {
+        if (!config.isHideRuneUseInMinigame()) return entries;
+        MenuEntry[] adjusted = Arrays.stream(entries)
+                .filter(
+                        entry ->
+                                !entry.getTarget().contains(" rune") ||
+                                        !entry.getOption().equals("Use")
+                ).toArray(MenuEntry[]::new);
+        Arrays.stream(adjusted).filter(entry -> entry.getOption().equals("Drop")).forEach(option -> option.setType(MenuAction.CC_OP));
+        return adjusted;
     }
 
     private MenuEntry[] handleUseOptionOnPlayer(

@@ -18,10 +18,10 @@ import net.runelite.api.events.GameTick;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.OverlayMenuEntry;
 import net.runelite.client.ui.overlay.OverlayPanel;
-import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.LineComponent;
 
 import javax.inject.Inject;
@@ -88,7 +88,7 @@ public class PointStatusOverlay extends OverlayPanel implements Slice {
     @Inject
     public PointStatusOverlay(GuardianOfTheRiftOptimizerPlugin plugin) {
         this.plugin = plugin;
-        this.setPosition(OverlayPosition.TOP_CENTER);
+        this.setPosition(plugin.getConfig().pointStatusOverlayPosition());
         this.getMenuEntries().add(
                 new OverlayMenuEntry(
                         MenuAction.RUNELITE_OVERLAY_CONFIG,
@@ -96,6 +96,12 @@ public class PointStatusOverlay extends OverlayPanel implements Slice {
                         "Guardians of the Rift Point Analysis"
                 )
         );
+    }
+
+    @Subscribe
+    public void onConfigChanged(ConfigChanged configChanged) {
+        if (!"pointStatusInfoboxPosition".equals(configChanged.getKey())) return;
+        this.setPosition(plugin.getConfig().pointStatusOverlayPosition());
     }
 
     @Subscribe

@@ -103,18 +103,23 @@ public class ObeliskSlice extends AbstractPluginSlice {
     }
 
     private void handleObeliskUpdate() {
-        if (activeObeliskGameObjects.size() != 2) return;
-        Obelisk first = Obelisk.getObeliskByGameObjectId(activeObeliskGameObjects.get(0).getId());
-        Obelisk second = Obelisk.getObeliskByGameObjectId(activeObeliskGameObjects.get(1).getId());
-        if (first == null || second == null) return;
-        boolean isFirstCatalytic = first.getTypeAssociation() == TypeAssociation.CATALYTIC;
-        this.bus.post(
-                new ObeliskUpdateEvent(
-                        client.getTickCount(),
-                        isFirstCatalytic ? second.getIndexId() : first.getIndexId(),
-                        isFirstCatalytic ? first.getIndexId() : second.getIndexId()
-                )
-        );
+        if (activeObeliskGameObjects.size() != 2) {
+            this.catalytic = null;
+            this.elemental = null;
+            this.updateObeliskEfficiencyWeight();
+        } else {
+            Obelisk first = Obelisk.getObeliskByGameObjectId(activeObeliskGameObjects.get(0).getId());
+            Obelisk second = Obelisk.getObeliskByGameObjectId(activeObeliskGameObjects.get(1).getId());
+            if (first == null || second == null) return;
+            boolean isFirstCatalytic = first.getTypeAssociation() == TypeAssociation.CATALYTIC;
+            this.bus.post(
+                    new ObeliskUpdateEvent(
+                            client.getTickCount(),
+                            isFirstCatalytic ? second.getIndexId() : first.getIndexId(),
+                            isFirstCatalytic ? first.getIndexId() : second.getIndexId()
+                    )
+            );
+        }
     }
 
     @Subscribe

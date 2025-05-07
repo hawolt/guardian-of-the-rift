@@ -278,7 +278,7 @@ public enum RuneCraftInfo {
             case StaticConstant.RUNECRAFTING_ALTAR_BLOOD:
                 return RuneCraftInfo.BLOOD;
             default:
-                throw new IllegalArgumentException("Unknown Altar: " + altarId);
+                return null;
         }
     }
 

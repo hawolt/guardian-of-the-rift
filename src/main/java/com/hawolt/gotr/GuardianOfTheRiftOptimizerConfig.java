@@ -2,6 +2,7 @@ package com.hawolt.gotr;
 
 import com.hawolt.gotr.data.RuneCraftInfo;
 import net.runelite.client.config.*;
+import net.runelite.client.ui.overlay.OverlayPosition;
 
 import java.awt.*;
 
@@ -365,7 +366,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             section = menuSwappingConfiguration
     )
     default boolean isHideUseOptionOnPlayer() {
-        return true;
+        return false;
     }
 
     @ConfigItem(
@@ -376,6 +377,17 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             section = menuSwappingConfiguration
     )
     default boolean isHideDepositPoolDepositOption() {
+        return false;
+    }
+
+    @ConfigItem(
+            keyName = "hideRunesUseOption",
+            name = "Hide Use in Minigame (Runes)",
+            description = "Hides the left click Use option",
+            position = 7,
+            section = menuSwappingConfiguration
+    )
+    default boolean isHideRuneUseInMinigame() {
         return false;
     }
 
@@ -430,11 +442,26 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
         return true;
     }
 
+    @Range(
+            min = 0,
+            max = 16
+    )
+    @ConfigItem(
+            keyName = "bindingNecklaceChargeWarningThreshold",
+            name = "Charge Warning",
+            description = "Display a red outline when on or below specified Binding Necklace charges",
+            position = 4,
+            section = miscellaneousConfiguration
+    )
+    default int bindingNecklaceChargeWarningThreshold() {
+        return 5;
+    }
+
     @ConfigItem(
             keyName = "showBindingNecklaceWarning",
             name = "Binding Necklace Altar Warning",
             description = "Display an indicator on an Elemental Altar when you have no Binding Necklace",
-            position = 4,
+            position = 5,
             section = miscellaneousConfiguration
     )
     default boolean isShowBindingNecklaceWarning() {
@@ -445,11 +472,22 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             keyName = "showPointStatusInfobox",
             name = "Point Status Infobox",
             description = "Display an additional Infobox with a minigame Point Status",
-            position = 5,
+            position = 6,
             section = miscellaneousConfiguration
     )
     default boolean isShowPointStatusInfobox() {
         return true;
+    }
+
+    @ConfigItem(
+            keyName = "pointStatusInfoboxPosition",
+            name = "Position",
+            description = "Set the position for the Point Status Overlay",
+            position = 7,
+            section = miscellaneousConfiguration
+    )
+    default OverlayPosition pointStatusOverlayPosition() {
+        return OverlayPosition.BOTTOM_LEFT;
     }
 
     @ConfigSection(

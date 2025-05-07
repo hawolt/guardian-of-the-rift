@@ -54,16 +54,7 @@ public class BindingNecklaceIndicatorOverlay extends AbstractMinigameRenderer {
     @Override
     public void startup() {
         super.startup();
-        this.executor.execute(()->{
-            try (InputStream inputStream = BindingNecklaceIndicatorOverlay.class.getResourceAsStream("/blank_sprite.png")) {
-                if (inputStream == null) return;
-                synchronized (ImageIO.class){
-                    this.blank = ImageIO.read(inputStream);
-                }
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        });
+        this.blank = ImageUtil.loadImageResource(BindingNecklaceIndicatorOverlay.class, "/blank_sprite.png");
     }
 
     @Override
@@ -107,7 +98,21 @@ public class BindingNecklaceIndicatorOverlay extends AbstractMinigameRenderer {
         int spriteLocationX = parentWidget.getRelativeX() + guardianWidget.getRelativeX() + guardianWidget.getWidth() + 16;
         int spriteLocationY = parentWidget.getRelativeY() + guardianWidget.getRelativeY() + 12;
 
-        if (isMagicImbueActive) {
+        int charges = plugin.getBindingNecklaceSlice().getBindingNecklaceCharges();
+        String text = String.format(
+                "%s/%s",
+                charges <= 0 ? "?" : charges,
+                16
+        );
+
+        if (charges <= plugin.getConfig().bindingNecklaceChargeWarningThreshold()) {
+            graphics2D.drawImage(
+                    ImageOutline.create(blank, Color.RED),
+                    spriteLocationX - 1,
+                    spriteLocationY - 1,
+                    null
+            );
+        } else if (isMagicImbueActive) {
             graphics2D.drawImage(
                     ImageOutline.create(blank, Color.CYAN),
                     spriteLocationX - 1,
@@ -115,6 +120,7 @@ public class BindingNecklaceIndicatorOverlay extends AbstractMinigameRenderer {
                     null
             );
         }
+
 
         graphics2D.drawImage(
                 blank,
@@ -134,13 +140,6 @@ public class BindingNecklaceIndicatorOverlay extends AbstractMinigameRenderer {
                 spriteLocationY + SPRITE_DIMENSION_HEIGHT + 1,
                 SPRITE_DIMENSION_WIDTH,
                 24);
-
-        int charges = plugin.getBindingNecklaceSlice().getBindingNecklaceCharges();
-        String text = String.format(
-                "%s/%s",
-                charges <= 0 ? "?" : charges,
-                16
-        );
 
         this.drawStringCenteredToBoundingBox(
                 graphics2D,
