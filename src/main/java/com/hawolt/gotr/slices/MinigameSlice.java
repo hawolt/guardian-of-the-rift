@@ -189,10 +189,8 @@ public class MinigameSlice extends AbstractPluginSlice {
         boolean isCatalyticEnumIndexUpdated = internalCatalyticRuneEnumIndex != catalyticRuneEnumIndex;
         if (!isElementalEnumIndexUpdated && !isCatalyticEnumIndexUpdated) return;
         this.bus.post(
-                new ObeliskUpdateEvent(
+                new ObeliskTickRemainingEvent(
                         client.getTickCount(),
-                        internalElementalRuneEnumIndex,
-                        internalCatalyticRuneEnumIndex,
                         internalGuardianTicksRemaining
                 )
         );

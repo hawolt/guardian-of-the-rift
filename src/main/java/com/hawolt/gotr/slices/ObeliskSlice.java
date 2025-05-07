@@ -6,11 +6,14 @@ import com.hawolt.gotr.events.EssenceAmountUpdateEvent;
 import com.hawolt.gotr.events.ObeliskAnalysisEvent;
 import com.hawolt.gotr.events.RenderSafetyEvent;
 import com.hawolt.gotr.events.minigame.impl.MinigameStateEvent;
+import com.hawolt.gotr.events.minigame.impl.ObeliskTickRemainingEvent;
 import com.hawolt.gotr.events.minigame.impl.ObeliskUpdateEvent;
 import com.hawolt.gotr.events.minigame.impl.RegionUpdateEvent;
 import com.hawolt.gotr.utility.ObeliskAnalysis;
 import lombok.AccessLevel;
 import lombok.Getter;
+import net.runelite.api.Animation;
+import net.runelite.api.DynamicObject;
 import net.runelite.api.GameObject;
 import net.runelite.api.Skill;
 import net.runelite.api.coords.WorldPoint;
@@ -41,10 +44,13 @@ public class ObeliskSlice extends AbstractPluginSlice {
     private boolean isInMinigameRegion;
 
     @Getter(AccessLevel.NONE)
-    private int currentRegionId, ticksRemainingUntilUpdate, currentClientTick;
+    private int currentRegionId, currentClientTick;
 
     @Getter(AccessLevel.NONE)
     private final Map<Integer, GameObject> obeliskGameObjects = new HashMap<>();
+
+    @Getter(AccessLevel.NONE)
+    private final List<GameObject> activeObeliskGameObjects = new ArrayList<>();
 
     @Override
     protected void startUp() {
@@ -71,6 +77,21 @@ public class ObeliskSlice extends AbstractPluginSlice {
 
     @Subscribe
     public void onGameTick(GameTick tick) {
+        List<GameObject> snapshot = new ArrayList<>(activeObeliskGameObjects);
+        this.activeObeliskGameObjects.clear();
+        for (GameObject guardian : obeliskGameObjects.values()) {
+            Animation animation = ((DynamicObject) guardian.getRenderable()).getAnimation();
+            if (animation != null && animation.getId() == StaticConstant.MINIGAME_ACTIVE_GUARDIAN_ANIMATION_ID) {
+                activeObeliskGameObjects.add(guardian);
+            }
+        }
+        Set<Integer> snapshotIds = snapshot.stream()
+                .map(GameObject::getId)
+                .collect(Collectors.toSet());
+        Set<Integer> activeGuardianIds = activeObeliskGameObjects.stream()
+                .map(GameObject::getId)
+                .collect(Collectors.toSet());
+        if (!snapshotIds.equals(activeGuardianIds)) handleObeliskUpdate();
         if (currentRegionId != StaticConstant.MINIGAME_REGION_ID) return;
         WorldPoint current = client.getLocalPlayer().getWorldLocation();
         if (minigameState == MinigameState.CLOSING || minigameState == MinigameState.CLOSED) return;
@@ -79,6 +100,21 @@ public class ObeliskSlice extends AbstractPluginSlice {
             this.updateObeliskEfficiencyWeight();
         }
         this.worldPoint = current;
+    }
+
+    private void handleObeliskUpdate() {
+        if (activeObeliskGameObjects.size() != 2) return;
+        Obelisk first = Obelisk.getObeliskByGameObjectId(activeObeliskGameObjects.get(0).getId());
+        Obelisk second = Obelisk.getObeliskByGameObjectId(activeObeliskGameObjects.get(1).getId());
+        if (first == null || second == null) return;
+        boolean isFirstCatalytic = first.getTypeAssociation() == TypeAssociation.CATALYTIC;
+        this.bus.post(
+                new ObeliskUpdateEvent(
+                        client.getTickCount(),
+                        isFirstCatalytic ? second.getIndexId() : first.getIndexId(),
+                        isFirstCatalytic ? first.getIndexId() : second.getIndexId()
+                )
+        );
     }
 
     @Subscribe
@@ -97,10 +133,8 @@ public class ObeliskSlice extends AbstractPluginSlice {
 
     @Subscribe
     public void onObeliskUpdateEvent(ObeliskUpdateEvent event) {
-        this.catalytic = Obelisk.getObelisk(TypeAssociation.CATALYTIC, event.getCatalyticRuneEnumIndex());
-        this.elemental = Obelisk.getObelisk(TypeAssociation.ELEMENTAL, event.getElementalRuneEnumIndex());
-        this.ticksRemainingUntilUpdate = event.getRemainingTicksUntilUpdate();
-        this.currentClientTick = event.getClientTick();
+        this.catalytic = Obelisk.getObeliskByRuneIndexId(TypeAssociation.CATALYTIC, event.getCatalyticRuneEnumIndex());
+        this.elemental = Obelisk.getObeliskByRuneIndexId(TypeAssociation.ELEMENTAL, event.getElementalRuneEnumIndex());
         this.updateObeliskEfficiencyWeight();
     }
 
@@ -134,8 +168,6 @@ public class ObeliskSlice extends AbstractPluginSlice {
                             new ObeliskAnalysis(
                                     plugin,
                                     obelisk,
-                                    currentClientTick,
-                                    ticksRemainingUntilUpdate,
                                     obeliskGameObjects.get(obelisk.getGameObjectId())
                             )
                     )
