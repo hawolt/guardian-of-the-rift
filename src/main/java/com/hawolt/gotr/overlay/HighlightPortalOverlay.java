@@ -64,6 +64,11 @@ public class HighlightPortalOverlay extends AbstractMinigameRenderer {
     }
 
     @Override
+    public boolean isClientThreadRequiredOnShutDown() {
+        return true;
+    }
+
+    @Override
     public void shutdown() {
         super.shutdown();
         this.portal = null;

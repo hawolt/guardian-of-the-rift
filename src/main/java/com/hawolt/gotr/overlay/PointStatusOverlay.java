@@ -75,6 +75,16 @@ public class PointStatusOverlay extends OverlayPanel implements Slice {
         this.bus.unregister(this);
     }
 
+    @Override
+    public boolean isClientThreadRequiredOnStartup() {
+        return false;
+    }
+
+    @Override
+    public boolean isClientThreadRequiredOnShutDown() {
+        return false;
+    }
+
     @Inject
     public PointStatusOverlay(GuardianOfTheRiftOptimizerPlugin plugin) {
         this.plugin = plugin;

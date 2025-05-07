@@ -21,6 +21,11 @@ public class BindingNecklaceSlice extends AbstractPluginSlice {
     }
 
     @Override
+    public boolean isClientThreadRequiredOnStartup() {
+        return true;
+    }
+
+    @Override
     protected void startUp() {
         this.bindingNecklaceCharges = client.getVarpValue(StaticConstant.BINDING_NECKLACE_VARP_ID);
     }
