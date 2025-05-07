@@ -86,12 +86,7 @@ public class PathfinderSlice extends AbstractPluginSlice {
         Map<Integer, Integer> map = new LinkedHashMap<>();
         try (InputStream inputStream = PathfinderSlice.class.getResourceAsStream(resource)) {
             if (inputStream == null) return map;
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-            for (int result = bufferedInputStream.read(); result != -1; result = bufferedInputStream.read()) {
-                buffer.write((byte) result);
-            }
-            String[] content = buffer.toString(StandardCharsets.UTF_8).split("\n");
+            String[] content = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8).split("\n");
             for (String line : content) {
                 String[] split = line.trim().split("=");
                 int id = Integer.parseInt(split[0]);
