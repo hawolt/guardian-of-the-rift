@@ -366,7 +366,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             section = menuSwappingConfiguration
     )
     default boolean isHideUseOptionOnPlayer() {
-        return true;
+        return false;
     }
 
     @ConfigItem(
@@ -377,6 +377,17 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             section = menuSwappingConfiguration
     )
     default boolean isHideDepositPoolDepositOption() {
+        return false;
+    }
+
+    @ConfigItem(
+            keyName = "hideRunesUseOption",
+            name = "Hide Use in Minigame (Runes)",
+            description = "Hides the left click Use option",
+            position = 7,
+            section = menuSwappingConfiguration
+    )
+    default boolean isHideRuneUseInMinigame() {
         return false;
     }
 

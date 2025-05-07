@@ -63,7 +63,19 @@ public class MenuOptionSlice extends AbstractPluginSlice {
         entries = handleDepositPoolDepositOption(config, entries);
         entries = handleUseOptionOnPlayer(config, entries);
         entries = handleApprenticeTalkTo(config, entries);
+        entries = handleRuneUseOption(config, entries);
         menu.setMenuEntries(entries);
+    }
+
+    private MenuEntry[] handleRuneUseOption(GuardianOfTheRiftOptimizerConfig config, MenuEntry[] entries) {
+        return config.isHideRuneUseInMinigame() ?
+                Arrays.stream(entries)
+                        .filter(
+                                entry ->
+                                        !entry.getTarget().contains(" rune") ||
+                                                !entry.getOption().equals("Use")
+                        ).toArray(MenuEntry[]::new) :
+                entries;
     }
 
     private MenuEntry[] handleUseOptionOnPlayer(
