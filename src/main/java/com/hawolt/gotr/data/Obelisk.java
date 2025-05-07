@@ -39,10 +39,17 @@ public enum Obelisk {
         return null;
     }
 
-    public static Obelisk getObelisk(TypeAssociation association, int indexId) {
+    public static Obelisk getObeliskByRuneIndexId(TypeAssociation association, int indexId) {
         for (Obelisk obelisk : VALUES) {
             if (obelisk.typeAssociation != association) continue;
             if (obelisk.indexId == indexId) return obelisk;
+        }
+        return null;
+    }
+
+    public static Obelisk getObeliskByGameObjectId(int gameObjectId) {
+        for (Obelisk obelisk : VALUES) {
+            if (obelisk.gameObjectId == gameObjectId) return obelisk;
         }
         return null;
     }

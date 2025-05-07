@@ -43,6 +43,7 @@ public class StaticConstant {
     // MINIGAME INTERNALS
     public static final int MINIGAME_REGION_ID = 14484;
     public static final int MINIGAME_HUD_UPDATE_SCRIPT_ID = 5980;
+    public static final int MINIGAME_ACTIVE_GUARDIAN_ANIMATION_ID = 9363;
 
     // MINIGAME WIDGET INDICES
     public static final int MINIGAME_WIDGET_GROUP_ID = 746;

@@ -149,12 +149,16 @@ public class HighlightPortalOverlay extends AbstractMinigameRenderer {
 
     private void renderPortalOutline(GuardianOfTheRiftOptimizerConfig config) {
         if (!config.isPortalOutlineEnabled()) return;
-        this.modelOutlineRenderer.drawOutline(
-                portal,
-                config.portalOutlineWidth(),
-                config.portalOutlineColor(),
-                config.portalOutlineFeatherDistance()
-        );
+        try {
+            this.modelOutlineRenderer.drawOutline(
+                    portal,
+                    config.portalOutlineWidth(),
+                    config.portalOutlineColor(),
+                    config.portalOutlineFeatherDistance()
+            );
+        } catch (Exception e) {
+
+        }
     }
 
     private void renderPortalTime(GuardianOfTheRiftOptimizerConfig config, Graphics2D graphics2D) {

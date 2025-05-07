@@ -28,7 +28,7 @@ public class ObeliskAnalysis {
     @Getter(AccessLevel.PUBLIC)
     private double weightedEfficiency;
     @Getter(AccessLevel.PUBLIC)
-    private int remainingTicksUntilUpdate, currentClientTick, normalizedTileDistance;
+    private int normalizedTileDistance;
     @Getter(AccessLevel.PUBLIC)
     private boolean isTalismanAvailable, isDowngradeBetter;
 
@@ -40,15 +40,11 @@ public class ObeliskAnalysis {
     public ObeliskAnalysis(
             GuardianOfTheRiftOptimizerPlugin plugin,
             Obelisk obelisk,
-            int currentClientTick,
-            int remainingTicksUntilUpdate,
             GameObject gameObject
     ) {
         this.plugin = plugin;
         this.obelisk = obelisk;
         this.gameObject = gameObject;
-        this.currentClientTick = currentClientTick;
-        this.remainingTicksUntilUpdate = remainingTicksUntilUpdate;
         this.runeCraftInfo = RuneCraftInfo.find(plugin.getConfig(), obelisk);
         this.weightedEfficiency = calculateEfficiency();
         this.isTalismanAvailable = plugin.getInventoryEssenceSlice().getAvailableTalismanList().stream()
@@ -136,8 +132,6 @@ public class ObeliskAnalysis {
                 "runeCraftInfo=" + runeCraftInfo +
                 ", obelisk=" + obelisk +
                 ", weightedEfficiency=" + weightedEfficiency +
-                ", remainingTicksUntilUpdate=" + remainingTicksUntilUpdate +
-                ", currentClientTick=" + currentClientTick +
                 ", normalizedTileDistance=" + normalizedTileDistance +
                 ", isTalismanAvailable=" + isTalismanAvailable +
                 ", isDowngradeBetter=" + isDowngradeBetter +

@@ -6,18 +6,16 @@ import lombok.Getter;
 
 @Getter(AccessLevel.PUBLIC)
 public class ObeliskUpdateEvent extends AbstractMinigameEvent {
-    private final int elementalRuneEnumIndex, catalyticRuneEnumIndex, remainingTicksUntilUpdate;
+    private final int elementalRuneEnumIndex, catalyticRuneEnumIndex;
 
     public ObeliskUpdateEvent(
             int clientTick,
             int elementalRuneEnumIndex,
-            int catalyticRuneEnumIndex,
-            int remainingTicksUntilUpdate
+            int catalyticRuneEnumIndex
     ) {
         super(clientTick);
         this.elementalRuneEnumIndex = elementalRuneEnumIndex;
         this.catalyticRuneEnumIndex = catalyticRuneEnumIndex;
-        this.remainingTicksUntilUpdate = remainingTicksUntilUpdate;
     }
 
     @Override
@@ -25,7 +23,6 @@ public class ObeliskUpdateEvent extends AbstractMinigameEvent {
         return "ObeliskUpdateEvent{" +
                 "elementalRuneEnumIndex=" + elementalRuneEnumIndex +
                 ", catalyticRuneEnumIndex=" + catalyticRuneEnumIndex +
-                ", remainingTicksUntilUpdate=" + remainingTicksUntilUpdate +
                 ", clientTick=" + clientTick +
                 '}';
     }

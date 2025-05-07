@@ -6,6 +6,7 @@ import com.hawolt.gotr.data.ObeliskType;
 import com.hawolt.gotr.data.StaticConstant;
 import com.hawolt.gotr.events.ObeliskAnalysisEvent;
 import com.hawolt.gotr.events.TickTimestampEvent;
+import com.hawolt.gotr.events.minigame.impl.ObeliskTickRemainingEvent;
 import com.hawolt.gotr.utility.ObeliskAnalysis;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -41,6 +42,8 @@ public class HighlightObeliskOverlay extends AbstractMinigameRenderer {
     private final Map<ObeliskType, ObeliskAnalysis[]> map;
     @Getter(AccessLevel.NONE)
     private long lastTickTimestamp;
+    @Getter(AccessLevel.NONE)
+    private int ticksRemainingUntilUpdate, referenceClientTick;
 
     @Inject
     public HighlightObeliskOverlay(GuardianOfTheRiftOptimizerPlugin plugin) {
@@ -53,6 +56,12 @@ public class HighlightObeliskOverlay extends AbstractMinigameRenderer {
     @Subscribe
     public void onObeliskAnalysisEvent(ObeliskAnalysisEvent event) {
         this.map.put(event.getObeliskType(), event.getObeliskAnalysis());
+    }
+
+    @Subscribe
+    public void onObeliskTickRemainingEvent(ObeliskTickRemainingEvent event) {
+        this.ticksRemainingUntilUpdate = event.getRemainingTicksUntilUpdate();
+        this.referenceClientTick = event.getClientTick();
     }
 
     @Subscribe
@@ -164,8 +173,8 @@ public class HighlightObeliskOverlay extends AbstractMinigameRenderer {
         if (object == null) return;
         if (analysis.isTalismanAvailable()) return;
 
-        int ticksSinceEvent = plugin.getClient().getTickCount() - analysis.getCurrentClientTick();
-        int ticksLeftUntilUpdate = analysis.getRemainingTicksUntilUpdate() - ticksSinceEvent;
+        int ticksSinceEvent = plugin.getClient().getTickCount() - referenceClientTick;
+        int ticksLeftUntilUpdate = ticksRemainingUntilUpdate - ticksSinceEvent;
         long elapsedSinceLastTick = System.currentTimeMillis() - lastTickTimestamp;
         long remaining = (ticksLeftUntilUpdate * StaticConstant.GAME_TICK_DURATION) - elapsedSinceLastTick;
 
