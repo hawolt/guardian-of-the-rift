@@ -17,6 +17,12 @@ public class EquipmentSlice extends AbstractPluginSlice {
     @Getter(AccessLevel.PUBLIC)
     private boolean isBindingNecklaceEquipped;
 
+
+    @Override
+    public boolean isClientThreadRequiredOnStartup() {
+        return true;
+    }
+
     protected void startUp() {
         if (client.getGameState() != GameState.LOGGED_IN) return;
         this.handle(client.getItemContainer(InventoryID.WORN));

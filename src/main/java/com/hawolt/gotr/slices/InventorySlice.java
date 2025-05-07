@@ -42,6 +42,12 @@ public class InventorySlice extends AbstractPluginSlice {
     @Getter(AccessLevel.PUBLIC)
     private List<Item> availableTalismanList = Collections.emptyList();
 
+
+    @Override
+    public boolean isClientThreadRequiredOnStartup() {
+        return true;
+    }
+
     @Override
     protected void startUp() {
         this.essenceInInventory = 0;

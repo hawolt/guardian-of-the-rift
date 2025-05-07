@@ -172,7 +172,11 @@ public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
                 muteSlice
         );
         for (Slice slice : slices) {
-            slice.startup();
+            if (slice.isClientThreadRequiredOnStartup()) {
+                this.clientThread.invokeLater(slice::startup);
+            } else {
+                slice.startup();
+            }
             if (slice instanceof AbstractMinigameRenderer) {
                 AbstractMinigameRenderer renderer = (AbstractMinigameRenderer) slice;
                 this.overlayManager.add(renderer);
@@ -186,7 +190,11 @@ public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
     @Override
     protected void shutDown() throws Exception {
         for (Slice slice : slices) {
-            slice.shutdown();
+            if (slice.isClientThreadRequiredOnShutDown()) {
+                this.clientThread.invokeLater(slice::shutdown);
+            } else {
+                slice.shutdown();
+            }
             if (slice instanceof AbstractMinigameRenderer) {
                 AbstractMinigameRenderer renderer = (AbstractMinigameRenderer) slice;
                 this.overlayManager.remove(renderer);

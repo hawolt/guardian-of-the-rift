@@ -25,6 +25,16 @@ public abstract class AbstractPluginSlice implements Slice {
         this.shutDown();
     }
 
+    @Override
+    public boolean isClientThreadRequiredOnStartup() {
+        return false;
+    }
+
+    @Override
+    public boolean isClientThreadRequiredOnShutDown() {
+        return false;
+    }
+
     protected abstract void startUp();
 
     protected abstract void shutDown();

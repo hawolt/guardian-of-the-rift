@@ -24,6 +24,11 @@ public class PouchEssenceSlice extends AbstractPluginSlice {
     private final Map<Pouch, Boolean> pouchInUseMapping = new HashMap<>();
 
     @Override
+    public boolean isClientThreadRequiredOnStartup() {
+        return true;
+    }
+
+    @Override
     protected void startUp() {
         if (client.getGameState() != GameState.LOGGED_IN) return;
         this.handle(client.getItemContainer(StaticConstant.INVENTORY_CONTAINER_ID));

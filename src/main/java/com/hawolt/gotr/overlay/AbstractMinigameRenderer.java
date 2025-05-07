@@ -28,6 +28,16 @@ public abstract class AbstractMinigameRenderer extends Overlay implements Slice 
         this.bus.unregister(this);
     }
 
+    @Override
+    public boolean isClientThreadRequiredOnStartup() {
+        return false;
+    }
+
+    @Override
+    public boolean isClientThreadRequiredOnShutDown() {
+        return false;
+    }
+
     @Subscribe
     public void onRenderSafetyEvent(RenderSafetyEvent event) {
         this.renderSafetyEvent = event;
