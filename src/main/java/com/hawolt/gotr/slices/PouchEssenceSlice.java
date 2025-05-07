@@ -25,6 +25,7 @@ public class PouchEssenceSlice extends AbstractPluginSlice {
 
     @Override
     protected void startUp() {
+        if (client.getGameState() != GameState.LOGGED_IN) return;
         this.handle(client.getItemContainer(StaticConstant.INVENTORY_CONTAINER_ID));
     }
 
