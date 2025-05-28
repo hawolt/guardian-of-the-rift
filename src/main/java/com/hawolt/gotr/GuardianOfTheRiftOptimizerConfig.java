@@ -108,6 +108,27 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
         return FireAlterOptionEnum.FIRE;
     }
 
+    enum CosmicAlterOptionEnum {
+        COSMIC(RuneCraftInfo.COSMIC),
+        AETHER(RuneCraftInfo.AETHER_CRAFTED_ON_COSMIC);
+        public final RuneCraftInfo relation;
+
+        CosmicAlterOptionEnum(final RuneCraftInfo relation) {
+            this.relation = relation;
+        }
+    }
+
+    @ConfigItem(
+            position = 4,
+            keyName = "cosmicAltar",
+            name = "Cosmic Altar",
+            description = "The rune to be crafted",
+            section = combinationRuneConfiguration
+    )
+    default CosmicAlterOptionEnum cosmicAltar() {
+        return CosmicAlterOptionEnum.COSMIC;
+    }
+
     @ConfigSection(
             position = 1,
             name = "Optimal Guardian",

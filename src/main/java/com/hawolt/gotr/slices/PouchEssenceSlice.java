@@ -52,7 +52,7 @@ public class PouchEssenceSlice extends AbstractPluginSlice {
         synchronized (lock) {
             for (Pouch pouch : Pouch.VALUES) {
                 boolean isPouchInUse = Arrays.stream(inventory)
-                        .anyMatch(item -> item.getId() == pouch.getItemId());
+                        .anyMatch(item -> pouch.isOfType(item.getId()));
                 this.pouchInUseMapping.put(pouch, isPouchInUse);
             }
         }
