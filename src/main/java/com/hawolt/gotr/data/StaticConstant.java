@@ -68,6 +68,7 @@ public class StaticConstant {
     public static final int MINIGAME_ELEMENTAL_GUARDIAN_STONE_ID = 26881;
     public static final int MINIGAME_CATALYTIC_GUARDIAN_STONE_ID = 26880;
     public static final int MINIGAME_POLYELEMENTAL_GUARDIAN_STONE_ID = 26941;
+    public static final int MINIGAME_POLYCATALYTIC_GUARDIAN_STONE_ID = 30887;
 
     // MINIGAME ITEMS OTHER
     public static final int MINIGAME_UNCHARGED_CELL_ID = 26882;
@@ -90,7 +91,8 @@ public class StaticConstant {
     public static final Set<Integer> MINIGAME_GUARDIAN_STONE_IDS = ImmutableSet.of(
             MINIGAME_ELEMENTAL_GUARDIAN_STONE_ID,
             MINIGAME_CATALYTIC_GUARDIAN_STONE_ID,
-            MINIGAME_POLYELEMENTAL_GUARDIAN_STONE_ID
+            MINIGAME_POLYELEMENTAL_GUARDIAN_STONE_ID,
+            MINIGAME_POLYCATALYTIC_GUARDIAN_STONE_ID
     );
 
     public static final Set<Integer> MINIGAME_CHARGED_CELL_IDS = Arrays.stream(ChargeableCellType.VALUES)

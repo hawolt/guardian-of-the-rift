@@ -221,6 +221,15 @@ public enum RuneCraftInfo {
             StaticConstant.RUNECRAFTING_ALTAR_BLOOD,
             false,
             null
+    ),
+    AETHER_CRAFTED_ON_COSMIC(
+            StaticConstant.MINIGAME_COSMIC_OBELISK_ID,
+            20,
+            90,
+            ItemID.AETHERRUNE,
+            StaticConstant.RUNECRAFTING_ALTAR_COSMIC,
+            true,
+            RuneCraftInfo.COSMIC
     );
 
     private final int guardianGameObjectId, levelRequired, spriteId, altarId;
@@ -297,7 +306,7 @@ public enum RuneCraftInfo {
             case BODY:
                 return RuneCraftInfo.BODY;
             case COSMIC:
-                return RuneCraftInfo.COSMIC;
+                return config.cosmicAltar().relation;
             case CHAOS:
                 return RuneCraftInfo.CHAOS;
             case NATURE:
