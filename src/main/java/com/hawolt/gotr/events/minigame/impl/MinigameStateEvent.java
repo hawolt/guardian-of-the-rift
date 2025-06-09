@@ -8,9 +8,11 @@ import lombok.Getter;
 @Getter(AccessLevel.PUBLIC)
 public class MinigameStateEvent extends AbstractMinigameEvent {
     private final MinigameState currentMinigameState, previousMinigameState;
+    private final int internalGuardianTicksRemaining;
 
-    public MinigameStateEvent(int clientTick, MinigameState currentMinigameState, MinigameState previousMinigameState) {
+    public MinigameStateEvent(int clientTick, MinigameState currentMinigameState, MinigameState previousMinigameState, int internalGuardianTicksRemaining) {
         super(clientTick);
+        this.internalGuardianTicksRemaining = internalGuardianTicksRemaining;
         this.currentMinigameState = currentMinigameState;
         this.previousMinigameState = previousMinigameState;
     }
@@ -20,6 +22,7 @@ public class MinigameStateEvent extends AbstractMinigameEvent {
         return "MinigameStateEvent{" +
                 "currentMinigameState=" + currentMinigameState +
                 ", previousMinigameState=" + previousMinigameState +
+                ", internalGuardianTicksRemaining=" + internalGuardianTicksRemaining +
                 ", clientTick=" + clientTick +
                 '}';
     }

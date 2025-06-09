@@ -1,5 +1,6 @@
 package com.hawolt.gotr;
 
+import com.hawolt.gotr.data.GameStartIndicator;
 import com.hawolt.gotr.data.RuneCraftInfo;
 import net.runelite.client.config.*;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -129,8 +130,67 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
         return CosmicAlterOptionEnum.COSMIC;
     }
 
+
     @ConfigSection(
             position = 1,
+            name = "Notifications",
+            description = "Receive Notifications based on the game state"
+    )
+    String notificationConfiguration = "notificationConfiguration";
+
+    @ConfigItem(
+            keyName = "notifyOnPortalSpawn",
+            name = "on portal spawn",
+            description = "Receive a Notification when a portal spawns",
+            position = 0,
+            section = notificationConfiguration
+    )
+    default Notification notifyOnPortalSpawn() {
+        return Notification.ON;
+    }
+
+    @ConfigItem(
+            keyName = "notifyOnGameStart",
+            name = "before game start",
+            description = "Receive a Notification ? seconds before a game is about to start",
+            position = 1,
+            section = notificationConfiguration
+    )
+    default GameStartIndicator notifyOnGameStart() {
+        return GameStartIndicator.OFF;
+    }
+
+    @Range(
+            max = 120
+    )
+    @ConfigItem(
+            keyName = "notifyOnGuardianOpen",
+            name = "before Guardian open",
+            description = "Receive a Notification ? seconds before Obelisks are about to open up (0 = disabled)",
+            position = 2,
+            section = notificationConfiguration
+    )
+    default int notifyOnFirstObelisk() {
+        return 30;
+    }
+
+    @Range(
+            max = 300
+    )
+    @ConfigItem(
+            keyName = "notifyOnGuardianFragments",
+            name = "on Fragment amount",
+            description = "Receive a Notification when you reach a specific amount of Fragments (0 = disabled)",
+            position = 3,
+            section = notificationConfiguration
+    )
+    default int notifyOnGuardianFragments() {
+        return 0;
+    }
+
+
+    @ConfigSection(
+            position = 2,
             name = "Optimal Guardian",
             description = "Customize the outline for the Optimal Guardian"
     )
@@ -224,7 +284,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigSection(
-            position = 2,
+            position = 3,
             name = "Secondary Guardian",
             description = "Customize the outline for the Secondary Guardian"
     )
@@ -318,7 +378,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigSection(
-            position = 3,
+            position = 4,
             name = "Menu Swapping",
             description = "Hide specific Menu Options if conditions match"
     )
@@ -413,7 +473,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigSection(
-            position = 4,
+            position = 5,
             name = "Miscellaneous",
             description = "Various Quality of Life options"
     )
@@ -512,7 +572,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigSection(
-            position = 5,
+            position = 6,
             name = "The Great Guardian",
             description = "Options to enhance The Great Guardian"
     )
@@ -573,7 +633,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigSection(
-            position = 6,
+            position = 7,
             name = "Cell Tiles",
             description = "Options to enhance the Cell Tiles"
     )
@@ -634,7 +694,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigSection(
-            position = 7,
+            position = 8,
             name = "Uncharged Cell Table",
             description = "Options to enhance the Uncharged Cell Table"
     )
@@ -695,7 +755,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigSection(
-            position = 8,
+            position = 9,
             name = "Portal",
             description = "Options to enhance the Portal"
     )
@@ -778,7 +838,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigSection(
-            position = 9,
+            position = 10,
             name = "Deposit Pool",
             description = "Options to enhance the Deposit Pool"
     )
@@ -840,7 +900,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigSection(
-            position = 10,
+            position = 11,
             name = "Debugging",
             description = "Options to display additional information"
     )
