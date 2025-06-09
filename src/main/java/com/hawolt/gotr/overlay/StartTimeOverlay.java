@@ -2,9 +2,11 @@ package com.hawolt.gotr.overlay;
 
 import com.hawolt.gotr.GuardianOfTheRiftOptimizerPlugin;
 import com.hawolt.gotr.Slice;
+import com.hawolt.gotr.data.GameStartIndicator;
 import com.hawolt.gotr.data.MinigameState;
 import com.hawolt.gotr.data.StaticConstant;
 import com.hawolt.gotr.events.RenderSafetyEvent;
+import com.hawolt.gotr.events.minigame.impl.GameStartingSoonEvent;
 import com.hawolt.gotr.events.minigame.impl.MinigameStateEvent;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -120,10 +122,13 @@ public class StartTimeOverlay extends OverlayPanel implements Slice {
         String content = message.getMessage();
         if (content.contains("The rift will become active in 30 seconds.")) {
             this.gameWillStartAtTimestamp = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(30);
+            this.bus.post(new GameStartingSoonEvent(plugin.getClient().getTickCount(), GameStartIndicator.PHASE1));
         } else if (content.contains("The rift will become active in 10 seconds.")) {
             this.gameWillStartAtTimestamp = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(10);
+            this.bus.post(new GameStartingSoonEvent(plugin.getClient().getTickCount(), GameStartIndicator.PHASE2));
         } else if (content.contains("The rift will become active in 5 seconds.")) {
             this.gameWillStartAtTimestamp = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(5);
+            this.bus.post(new GameStartingSoonEvent(plugin.getClient().getTickCount(), GameStartIndicator.PHASE3));
         }
     }
 

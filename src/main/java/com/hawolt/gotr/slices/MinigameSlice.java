@@ -7,12 +7,17 @@ import com.hawolt.gotr.data.TypeAssociation;
 import com.hawolt.gotr.events.minigame.impl.*;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.GameState;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ScriptPreFired;
 import net.runelite.client.eventbus.Subscribe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+@Slf4j
 public class MinigameSlice extends AbstractPluginSlice {
 
     @Getter(AccessLevel.NONE)
@@ -133,7 +138,7 @@ public class MinigameSlice extends AbstractPluginSlice {
         MinigameState minigameState = getMinigameState();
         if (this.minigameState == minigameState) return;
 
-        this.bus.post(new MinigameStateEvent(internalCurrentClientTick, minigameState, this.minigameState));
+        this.bus.post(new MinigameStateEvent(internalCurrentClientTick, minigameState, this.minigameState, this.internalGuardianTicksRemaining));
 
         if (minigameState == MinigameState.CLOSING && this.minigameState != MinigameState.CLOSING) {
             this.bus.post(new GameStatusEvent(internalCurrentClientTick, currentPower == maximumPower));

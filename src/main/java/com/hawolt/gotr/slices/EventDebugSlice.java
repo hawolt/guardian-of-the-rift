@@ -1,13 +1,14 @@
 package com.hawolt.gotr.slices;
 
 import com.hawolt.gotr.AbstractPluginSlice;
-import com.hawolt.gotr.events.EssenceAmountUpdateEvent;
-import com.hawolt.gotr.events.ObeliskAnalysisEvent;
-import com.hawolt.gotr.events.RenderSafetyEvent;
-import com.hawolt.gotr.events.TickTimestampEvent;
+import com.hawolt.gotr.data.StaticConstant;
+import com.hawolt.gotr.events.*;
 import com.hawolt.gotr.events.minigame.impl.*;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.events.ScriptPreFired;
 import net.runelite.client.eventbus.Subscribe;
+
+import java.util.Arrays;
 
 @Slf4j
 public class EventDebugSlice extends AbstractPluginSlice {
@@ -23,8 +24,10 @@ public class EventDebugSlice extends AbstractPluginSlice {
     }
 
     @Subscribe
-    public void onTickTimestampEvent(TickTimestampEvent event) {
-        log.info("{}", event);
+    public void onScriptPreFired(ScriptPreFired event) {
+        if (event.getScriptId() != StaticConstant.MINIGAME_HUD_UPDATE_SCRIPT_ID) return;
+        Object[] arguments = event.getScriptEvent().getArguments();
+        log.info("onScriptPreFired{{}}", Arrays.asList(arguments));
     }
 
     @Subscribe
@@ -39,6 +42,16 @@ public class EventDebugSlice extends AbstractPluginSlice {
 
     @Subscribe
     public void onEssenceAmountUpdateEvent(EssenceAmountUpdateEvent event) {
+        log.info("{}", event);
+    }
+
+    @Subscribe
+    public void onFragmentAmountUpdateEvent(FragmentAmountUpdateEvent event) {
+        log.info("{}", event);
+    }
+
+    @Subscribe
+    public void onGameStartingSoonEvent(GameStartingSoonEvent event) {
         log.info("{}", event);
     }
 
@@ -101,4 +114,5 @@ public class EventDebugSlice extends AbstractPluginSlice {
     public void onPointResetEvent(PointResetEvent event) {
         log.info("{}", event);
     }
+
 }

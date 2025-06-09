@@ -103,6 +103,9 @@ public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
     private PointStatusOverlay pointStatusOverlay;
 
     @Inject
+    private NotificationSlice notificationSlice;
+
+    @Inject
     private RenderSafetySlice renderSafetySlice;
 
     @Inject
@@ -160,6 +163,7 @@ public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
                 pointStatusOverlay,
                 depositPoolOverlay,
                 tickTimestampSlice,
+                notificationSlice,
                 renderSafetySlice,
                 pouchEssenceSlice,
                 startTimeOverlay,

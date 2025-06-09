@@ -4,6 +4,7 @@ import com.hawolt.gotr.AbstractPluginSlice;
 import com.hawolt.gotr.data.ChargeableCellType;
 import com.hawolt.gotr.data.StaticConstant;
 import com.hawolt.gotr.events.EssenceAmountUpdateEvent;
+import com.hawolt.gotr.events.FragmentAmountUpdateEvent;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.runelite.api.GameState;
@@ -26,7 +27,8 @@ public class InventorySlice extends AbstractPluginSlice {
     private int
             essenceInInventory,
             emptyInventorySlots,
-            availableUnchargedCells;
+            availableUnchargedCells,
+            guardianFragmentsInInventory;
 
     @Getter(AccessLevel.PUBLIC)
     private boolean
@@ -52,6 +54,7 @@ public class InventorySlice extends AbstractPluginSlice {
     protected void startUp() {
         this.essenceInInventory = 0;
         this.emptyInventorySlots = 0;
+        this.guardianFragmentsInInventory = 0;
         if (client.getGameState() != GameState.LOGGED_IN) return;
         this.handle(client.getItemContainer(InventoryID.INV));
     }
@@ -71,17 +74,23 @@ public class InventorySlice extends AbstractPluginSlice {
     private void handle(ItemContainer container) {
         if (container == null) return;
         Item[] inventory = container.getItems();
-        int essenceInInventory = 0;
+        int guardianFragmentsInInventory = 0;
         int emptyInventorySlots = 0;
+        int essenceInInventory = 0;
         for (Item item : inventory) {
             if (item.getId() == StaticConstant.MINIGAME_GUARDIAN_STONE_ID) essenceInInventory++;
+            else if (item.getId() == ItemID.GOTR_GUARDIAN_FRAGMENT) guardianFragmentsInInventory = item.getQuantity();
             else if (item.getId() == -1) emptyInventorySlots++;
+        }
+        if (this.guardianFragmentsInInventory != guardianFragmentsInInventory) {
+            this.bus.post(new FragmentAmountUpdateEvent(this.guardianFragmentsInInventory, guardianFragmentsInInventory));
         }
         if (this.essenceInInventory != essenceInInventory) {
             this.bus.post(new EssenceAmountUpdateEvent(this.essenceInInventory, essenceInInventory));
         }
-        this.essenceInInventory = essenceInInventory;
+        this.guardianFragmentsInInventory = guardianFragmentsInInventory;
         this.emptyInventorySlots = emptyInventorySlots;
+        this.essenceInInventory = essenceInInventory;
         this.isGuardianStoneAvailable = Arrays.stream(inventory)
                 .anyMatch(item -> StaticConstant.MINIGAME_GUARDIAN_STONE_IDS.contains(item.getId()));
         this.isUnchargedCellAvailable = Arrays.stream(inventory)
