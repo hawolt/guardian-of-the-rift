@@ -3,7 +3,7 @@
 ![image](https://img.shields.io/endpoint?url=https://api.runelite.net/pluginhub/shields/rank/plugin/guardians-of-the-rift-optimizer)
 ![image](https://img.shields.io/endpoint?url=https://api.runelite.net/pluginhub/shields/installs/plugin/guardians-of-the-rift-optimizer)
 
-* Computes optimal Guardian for best XP yield
+* Computes optimal Guardian for either Experience or Point distribution
 * Outlines the Guardians as specified via config
 * Adds various icons and indicators to improve the minigame experience
 * Highlights Objects as specified via Config
