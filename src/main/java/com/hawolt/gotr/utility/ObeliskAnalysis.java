@@ -1,9 +1,7 @@
 package com.hawolt.gotr.utility;
 
 import com.hawolt.gotr.GuardianOfTheRiftOptimizerPlugin;
-import com.hawolt.gotr.data.Obelisk;
-import com.hawolt.gotr.data.RuneCraftInfo;
-import com.hawolt.gotr.data.StaticConstant;
+import com.hawolt.gotr.data.*;
 import com.hawolt.gotr.pathfinding.PathCreator;
 import com.hawolt.gotr.pathfinding.Pathfinder;
 import com.hawolt.gotr.simulator.Simulator;
@@ -34,17 +32,24 @@ public class ObeliskAnalysis {
 
     @Getter(AccessLevel.NONE)
     private final GuardianOfTheRiftOptimizerPlugin plugin;
+    @Getter(AccessLevel.NONE)
+    private final OptimizationMode optimizationMode;
+    @Getter(AccessLevel.NONE)
+    private final PointStatus pointStatus;
     @Getter(AccessLevel.PUBLIC)
     private List<WorldPoint> pathToGuardian;
 
     public ObeliskAnalysis(
             GuardianOfTheRiftOptimizerPlugin plugin,
             Obelisk obelisk,
+            PointStatus pointStatus,
             GameObject gameObject
     ) {
         this.plugin = plugin;
         this.obelisk = obelisk;
         this.gameObject = gameObject;
+        this.pointStatus = pointStatus;
+        this.optimizationMode = plugin.getConfig().optimizationMode();
         this.runeCraftInfo = RuneCraftInfo.find(plugin.getConfig(), obelisk);
         this.weightedEfficiency = calculateEfficiency();
         this.isTalismanAvailable = plugin.getInventoryEssenceSlice().getAvailableTalismanList().stream()
@@ -63,6 +68,7 @@ public class ObeliskAnalysis {
         return Objects.hashCode(obelisk);
     }
 
+
     private double calculateEfficiency() {
         Pathfinder pathfinder = new Pathfinder(plugin);
         Pair<List<WorldPoint>, Boolean> pathPair = PathCreator.pathTo(pathfinder, gameObject);
@@ -77,6 +83,32 @@ public class ObeliskAnalysis {
                 pathPair.getRight()
         );
 
+        switch (optimizationMode) {
+            case EXPERIENCE:
+                return calculateExperienceWeight();
+            case POINTS:
+                return calculatePointWeight();
+        }
+        throw new RuntimeException("Unknown optimization mode " + optimizationMode);
+    }
+
+    private double calculatePointWeight() {
+        double elementalRewardPoints = pointStatus.getElementalRewardPoints() + (pointStatus.getElementalPoints() / 100D);
+        double catalyticRewardPoints = pointStatus.getCatalyticRewardPoints() + (pointStatus.getCatalyticPoints() / 100D);
+        int outside = normalizeTileCount(pathToGuardian.size());
+        int inside = normalizeTileCount(obelisk.getTileDistance()) << 1;
+        this.normalizedTileDistance = outside;
+        long timeToWalk = (outside + inside) * StaticConstant.GAME_TICK_DURATION;
+        if (elementalRewardPoints > catalyticRewardPoints) {
+            return obelisk.getTypeAssociation() == TypeAssociation.CATALYTIC ? (1D / timeToWalk) * 100000 : 0;
+        } else if (catalyticRewardPoints > elementalRewardPoints) {
+            return obelisk.getTypeAssociation() == TypeAssociation.ELEMENTAL ? (1D / timeToWalk) * 100000 : 0;
+        } else {
+            return calculateExperienceWeight();
+        }
+    }
+
+    private double calculateExperienceWeight() {
         int availableEmptyInventorySlots = plugin.getInventoryEssenceSlice().getEmptyInventorySlots();
         int availableEssenceInPouches = plugin.getPouchEssenceSlice().getAvailableEssenceInPouches();
         int availableEssenceInInventory = plugin.getInventoryEssenceSlice().getEssenceInInventory();

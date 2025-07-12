@@ -6,6 +6,7 @@ import com.hawolt.gotr.data.MinigameState;
 import com.hawolt.gotr.data.StaticConstant;
 import com.hawolt.gotr.data.TypeAssociation;
 import com.hawolt.gotr.events.RenderSafetyEvent;
+import com.hawolt.gotr.events.RewardPointUpdateEvent;
 import com.hawolt.gotr.events.minigame.impl.MinigameStateEvent;
 import com.hawolt.gotr.events.minigame.impl.PointGainedEvent;
 import com.hawolt.gotr.events.minigame.impl.PointResetEvent;
@@ -48,22 +49,13 @@ public class PointStatusOverlay extends OverlayPanel implements Slice {
     private Color potentialPointStatusColor = Color.RED;
 
     @Getter(AccessLevel.NONE)
-    private int elementalPoints, catalyticPoints;
-
-    @Getter(AccessLevel.NONE)
-    private int elementalRewardPoints, catalyticRewardPoints;
-
-    @Getter(AccessLevel.NONE)
     private int totalElementalRewardPoints = -1, totalCatalyticRewardPoints = -1;
 
     @Getter(AccessLevel.NONE)
-    private final Pattern CHECKUP_POINT_PATTERN = Pattern.compile(StaticConstant.MINIGAME_POINT_STATUS_CHECKUP);
+    private int elementalPoints, catalyticPoints;
 
     @Getter(AccessLevel.NONE)
     private final Pattern GAINED_POINT_PATTERN = Pattern.compile(StaticConstant.MINIGAME_POINT_STATUS_GAINED);
-
-    @Getter(AccessLevel.NONE)
-    private final Pattern TOTAL_POINT_PATTERN = Pattern.compile(StaticConstant.MINIGAME_POINT_STATUS_TOTAL);
 
     @Override
     public void startup() {
@@ -110,20 +102,10 @@ public class PointStatusOverlay extends OverlayPanel implements Slice {
     }
 
     @Subscribe
-    public void onGameTick(GameTick event) {
-        if (!renderSafetyEvent.isInGame()) return;
-        Widget dialog = plugin.getClient().getWidget(
-                StaticConstant.GAME_DIALOG_WIDGET_GROUP,
-                StaticConstant.GAME_DIALOG_WIDGET_CONTENT
-        );
-        if (dialog == null) return;
-        String content = dialog.getText();
-        Matcher matcher = CHECKUP_POINT_PATTERN.matcher(content);
-        if (!matcher.find()) return;
-        this.totalElementalRewardPoints = Integer.parseInt(matcher.group(2));
-        this.totalCatalyticRewardPoints = Integer.parseInt(matcher.group(1));
+    public void onRewardPointUpdateEvent(RewardPointUpdateEvent rewardPointUpdateEvent) {
+        this.totalElementalRewardPoints = rewardPointUpdateEvent.getTotalElementalRewardPoints();
+        this.totalCatalyticRewardPoints = rewardPointUpdateEvent.getTotalCatalyticRewardPoints();
     }
-
 
     @Subscribe
     public void onPointGainedEvent(PointGainedEvent event) {
@@ -154,37 +136,6 @@ public class PointStatusOverlay extends OverlayPanel implements Slice {
         this.potentialPointStatusColor = Color.RED;
         this.elementalPoints = 0;
         this.catalyticPoints = 0;
-    }
-
-    @Subscribe
-    public void onChatMessage(ChatMessage message) {
-        String content = message.getMessage();
-        if (message.getType() == ChatMessageType.GAMEMESSAGE) {
-            checkGainedPointStatus(content);
-            checkTotalPointStatus(content);
-        } else if (message.getType() == ChatMessageType.SPAM) {
-            checkPointsSpent(content);
-        }
-    }
-
-    private void checkPointsSpent(String content) {
-        if (!content.startsWith("You found some loot: ")) return;
-        this.totalElementalRewardPoints -= 1;
-        this.totalCatalyticRewardPoints -= 1;
-    }
-
-    private void checkTotalPointStatus(String content) {
-        Matcher matcher = TOTAL_POINT_PATTERN.matcher(content);
-        if (!matcher.find()) return;
-        this.totalElementalRewardPoints = Integer.parseInt(matcher.group(1));
-        this.totalCatalyticRewardPoints = Integer.parseInt(matcher.group(2));
-    }
-
-    private void checkGainedPointStatus(String content) {
-        Matcher matcher = GAINED_POINT_PATTERN.matcher(content);
-        if (!matcher.find()) return;
-        this.elementalRewardPoints += Integer.parseInt(matcher.group(1));
-        this.catalyticRewardPoints += Integer.parseInt(matcher.group(2));
     }
 
     @Override

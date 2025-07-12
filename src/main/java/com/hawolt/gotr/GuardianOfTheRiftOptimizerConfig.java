@@ -1,6 +1,7 @@
 package com.hawolt.gotr;
 
 import com.hawolt.gotr.data.GameStartIndicator;
+import com.hawolt.gotr.data.OptimizationMode;
 import com.hawolt.gotr.data.RuneCraftInfo;
 import net.runelite.client.config.*;
 import net.runelite.client.ui.overlay.OverlayPosition;
@@ -9,6 +10,22 @@ import java.awt.*;
 
 @ConfigGroup("guardiansOfTheRiftOptimizer")
 public interface GuardianOfTheRiftOptimizerConfig extends Config {
+    @ConfigSection(
+            position = -1,
+            name = "Optimization Mode",
+            description = "Configure how to optimize the Minigame"
+    )
+    String optimizationModeConfiguration = "optimizationModeConfiguration";
+
+    @ConfigItem(
+            keyName = "optimizationMode",
+            name = "Optimization",
+            description = "The focus of the optimization",
+            section = optimizationModeConfiguration
+    )
+    default OptimizationMode optimizationMode() {
+        return OptimizationMode.EXPERIENCE;
+    }
 
     @ConfigSection(
             position = 0,
