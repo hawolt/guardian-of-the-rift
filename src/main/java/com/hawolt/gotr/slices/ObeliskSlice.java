@@ -5,28 +5,30 @@ import com.hawolt.gotr.data.*;
 import com.hawolt.gotr.events.EssenceAmountUpdateEvent;
 import com.hawolt.gotr.events.ObeliskAnalysisEvent;
 import com.hawolt.gotr.events.RenderSafetyEvent;
-import com.hawolt.gotr.events.minigame.impl.MinigameStateEvent;
-import com.hawolt.gotr.events.minigame.impl.ObeliskTickRemainingEvent;
-import com.hawolt.gotr.events.minigame.impl.ObeliskUpdateEvent;
-import com.hawolt.gotr.events.minigame.impl.RegionUpdateEvent;
+import com.hawolt.gotr.events.RewardPointUpdateEvent;
+import com.hawolt.gotr.events.minigame.impl.*;
 import com.hawolt.gotr.utility.ObeliskAnalysis;
+import com.hawolt.gotr.utility.PointStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
-import net.runelite.api.Animation;
-import net.runelite.api.DynamicObject;
-import net.runelite.api.GameObject;
-import net.runelite.api.Skill;
+import net.runelite.api.*;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameObjectDespawned;
 import net.runelite.api.events.GameObjectSpawned;
 import net.runelite.api.events.GameTick;
 import net.runelite.client.eventbus.Subscribe;
 
+import javax.swing.plaf.PanelUI;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ObeliskSlice extends AbstractPluginSlice {
+
+    @Getter(AccessLevel.NONE)
+    private final Object lock = new Object();
 
     @Getter(AccessLevel.NONE)
     private Obelisk elemental, catalytic;
@@ -44,7 +46,10 @@ public class ObeliskSlice extends AbstractPluginSlice {
     private boolean isInMinigameRegion;
 
     @Getter(AccessLevel.NONE)
-    private int currentRegionId, currentClientTick;
+    private int currentRegionId, elementalPoints, catalyticPoints;
+
+    @Getter(AccessLevel.NONE)
+    private RewardPointUpdateEvent rewardPointUpdateEvent;
 
     @Getter(AccessLevel.NONE)
     private final Map<Integer, GameObject> obeliskGameObjects = new HashMap<>();
@@ -71,8 +76,11 @@ public class ObeliskSlice extends AbstractPluginSlice {
         this.bus.post(new ObeliskAnalysisEvent(ObeliskType.SECONDARY));
     }
 
+    @Subscribe
     public void onMinigameStateEvent(MinigameStateEvent event) {
         this.minigameState = event.getCurrentMinigameState();
+        if (event.getCurrentMinigameState() != MinigameState.CLOSING) return;
+        this.onPointResetEvent(null);
     }
 
     @Subscribe
@@ -150,6 +158,32 @@ public class ObeliskSlice extends AbstractPluginSlice {
     }
 
     @Subscribe
+    public void onRewardPointUpdateEvent(RewardPointUpdateEvent rewardPointUpdateEvent) {
+        this.rewardPointUpdateEvent = rewardPointUpdateEvent;
+    }
+
+    @Subscribe
+    public void onPointGainedEvent(PointGainedEvent event) {
+        synchronized (lock) {
+            TypeAssociation typeAssociation = event.getRuneType();
+            switch (typeAssociation) {
+                case ELEMENTAL:
+                    this.elementalPoints += event.getGained();
+                    break;
+                case CATALYTIC:
+                    this.catalyticPoints += event.getGained();
+                    break;
+            }
+        }
+    }
+
+    @Subscribe
+    public void onPointResetEvent(PointResetEvent event) {
+        this.elementalPoints = 0;
+        this.catalyticPoints = 0;
+    }
+
+    @Subscribe
     public void onRenderSafetyEvent(RenderSafetyEvent event) {
         this.renderSafetyEvent = event;
     }
@@ -160,6 +194,15 @@ public class ObeliskSlice extends AbstractPluginSlice {
             this.bus.post(new ObeliskAnalysisEvent(ObeliskType.SECONDARY));
         } else {
             if (!renderSafetyEvent.isInGame() || renderSafetyEvent.isVolatileState() || !isInMinigameRegion) return;
+            RewardPointUpdateEvent reference = rewardPointUpdateEvent == null ?
+                    new RewardPointUpdateEvent(0, 0) :
+                    rewardPointUpdateEvent;
+            PointStatus pointStatus = new PointStatus(
+                    elementalPoints,
+                    catalyticPoints,
+                    reference.getTotalElementalRewardPoints(),
+                    reference.getTotalCatalyticRewardPoints()
+            );
             Stream<Obelisk> available = plugin.getInventoryEssenceSlice().getAvailableTalismanList()
                     .stream()
                     .map(item -> Obelisk.getByTalismanItemId(item.getId()))
@@ -173,13 +216,17 @@ public class ObeliskSlice extends AbstractPluginSlice {
                             new ObeliskAnalysis(
                                     plugin,
                                     obelisk,
+                                    pointStatus,
                                     obeliskGameObjects.get(obelisk.getGameObjectId())
                             )
                     )
                     .filter(analysis ->
                             client.getBoostedSkillLevel(Skill.RUNECRAFT) >= analysis.getRuneCraftInfo().getLevelRequired()
                     )
-
+                    .filter(analysis ->
+                            analysis.getObelisk().getRequiredQuest() == null ||
+                                    analysis.getObelisk().getRequiredQuest().getState(client) == QuestState.FINISHED
+                    )
                     .sorted(Comparator.comparingDouble(ObeliskAnalysis::getWeightedEfficiency).reversed())
                     .collect(Collectors.toList());
             if (list.isEmpty()) {

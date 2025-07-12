@@ -76,6 +76,10 @@ public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
     private EquipmentSlice equipmentSlice;
 
     @Inject
+    @Getter(AccessLevel.PUBLIC)
+    private PointSlice pointSlice;
+
+    @Inject
     private BindingNecklaceIndicatorOverlay bindingNecklaceIndicatorOverlay;
 
     @Inject
@@ -173,6 +177,7 @@ public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
                 minigameSlice,
                 obeliskSlice,
                 debugOverlay,
+                pointSlice,
                 muteSlice
         );
         for (Slice slice : slices) {
