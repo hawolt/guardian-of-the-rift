@@ -1,9 +1,6 @@
 package com.hawolt.gotr;
 
-import com.hawolt.gotr.data.CellTilePriority;
-import com.hawolt.gotr.data.GameStartIndicator;
-import com.hawolt.gotr.data.OptimizationMode;
-import com.hawolt.gotr.data.RuneCraftInfo;
+import com.hawolt.gotr.data.*;
 import net.runelite.client.config.*;
 import net.runelite.client.ui.overlay.OverlayPosition;
 
@@ -506,6 +503,17 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     )
     default boolean isHideApprenticeHelpMessages() {
         return true;
+    }
+
+    @ConfigItem(
+            keyName = "gameStartTimerLocation",
+            name = "Start Time Location",
+            description = "Where to draw game start information",
+            position = 0,
+            section = miscellaneousConfiguration
+    )
+    default PaintLocation gameStartLocation() {
+        return PaintLocation.INFOBOX;
     }
 
     @ConfigItem(
