@@ -22,7 +22,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             section = optimizationModeConfiguration
     )
     default OptimizationMode optimizationMode() {
-        return OptimizationMode.EXPERIENCE;
+        return OptimizationMode.POINTS;
     }
 
     @ConfigSection(
@@ -546,7 +546,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             section = miscellaneousConfiguration
     )
     default boolean isShowBindingNecklaceStatus() {
-        return true;
+        return false;
     }
 
     @Range(
@@ -806,7 +806,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             section = portalConfiguration
     )
     default PaintLocation portalPaintLocation() {
-        return PaintLocation.BOTH;
+        return PaintLocation.SCREEN;
     }
 
     @ConfigItem(
