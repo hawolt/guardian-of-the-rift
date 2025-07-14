@@ -133,7 +133,9 @@ public class HighlightPortalOverlay extends AbstractMinigameRenderer {
 
     @Subscribe
     public void onPortalSpawnEvent(PortalSpawnEvent event) {
-        this.portalTicksRemaining = event.getTicksUntilDespawn();
+        // for some reason the portal always lasts a bit longer than specified via client script
+        // it also vanishes from HUD whilst still accessible so we add a 1 tick buffer time
+        this.portalTicksRemaining = event.getTicksUntilDespawn() + 1;
         this.portalSpawnedOnTick = event.getClientTick();
     }
 
