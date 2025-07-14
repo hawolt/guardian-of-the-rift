@@ -1,5 +1,6 @@
 package com.hawolt.gotr;
 
+import com.hawolt.gotr.data.CellTilePriority;
 import com.hawolt.gotr.data.GameStartIndicator;
 import com.hawolt.gotr.data.OptimizationMode;
 import com.hawolt.gotr.data.RuneCraftInfo;
@@ -655,6 +656,17 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             description = "Options to enhance the Cell Tiles"
     )
     String cellTileConfiguration = "cellTileConfiguration";
+
+    @ConfigItem(
+            keyName = "cellTilePriority",
+            name = "Cell Tile Priority",
+            description = "Chose which Cell Tile should be outlined",
+            position = 2,
+            section = cellTileConfiguration
+    )
+    default CellTilePriority cellTilePriority() {
+        return CellTilePriority.BEST;
+    }
 
     @ConfigItem(
             keyName = "cellTilesOutlineEnabled",
