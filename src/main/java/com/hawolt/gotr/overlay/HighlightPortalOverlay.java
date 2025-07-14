@@ -167,7 +167,9 @@ public class HighlightPortalOverlay extends AbstractMinigameRenderer {
         if (!config.isShowTimeSinceLastPortal()) return;
 
         int ticksSinceEvent = plugin.getClient().getTickCount() - portalSpawnedOnTick;
+        int ticksLeftToReach = (normalizedTileDistance >> 1) + 1;
         int ticksLeftUntilUpdate = portalTicksRemaining - ticksSinceEvent;
+        int ticksAvailable = ticksLeftUntilUpdate - ticksLeftToReach;
         long elapsedSinceLastTick = System.currentTimeMillis() - lastTickTimestamp;
         long remaining = (ticksLeftUntilUpdate * StaticConstant.GAME_TICK_DURATION) - elapsedSinceLastTick;
 
@@ -182,8 +184,17 @@ public class HighlightPortalOverlay extends AbstractMinigameRenderer {
                 200
         );
 
+        Color color;
+        if (ticksAvailable > 3) {
+            color = Color.WHITE;
+        } else if (ticksAvailable >= 0) {
+            color = Color.ORANGE;
+        } else {
+            color = Color.RED;
+        }
+
         if (canvasTextLocation == null) return;
-        OverlayUtil.renderTextLocation(graphics2D, canvasTextLocation, formatted, Color.WHITE);
+        OverlayUtil.renderTextLocation(graphics2D, canvasTextLocation, formatted, color);
     }
 
     private void renderPortalRunTime(GuardianOfTheRiftOptimizerConfig config, Graphics2D graphics2D) {
