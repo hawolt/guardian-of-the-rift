@@ -25,8 +25,7 @@ import java.util.Set;
 @PluginDescriptor(
         name = "Guardians of the Rift Optimizer",
         description = "Various utilities to improve and optimize the Guardians of the Rift minigame",
-        tags = {"minigame", "overlay", "guardians of the rift", "gotr", "minmax", "ehp"},
-        conflicts = "Guardians of the Rift Helper"
+        tags = {"minigame", "overlay", "guardians of the rift", "gotr", "minmax", "ehp"}
 )
 public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
 
