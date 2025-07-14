@@ -3,6 +3,7 @@ package com.hawolt.gotr.overlay;
 import com.hawolt.gotr.GuardianOfTheRiftOptimizerConfig;
 import com.hawolt.gotr.GuardianOfTheRiftOptimizerPlugin;
 import com.hawolt.gotr.data.MinigameState;
+import com.hawolt.gotr.data.PaintLocation;
 import com.hawolt.gotr.data.StaticConstant;
 import com.hawolt.gotr.events.RenderSafetyEvent;
 import com.hawolt.gotr.events.minigame.impl.MinigameStateEvent;
@@ -20,7 +21,7 @@ import javax.inject.Inject;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class PortalIndicatorOverlay extends AbstractMinigameRenderer {
+public class PortalIndicatorMimicOverlay extends AbstractMinigameRenderer {
 
     @Getter(AccessLevel.NONE)
     private final int SPRITE_DIMENSION_HEIGHT = 32;
@@ -44,7 +45,7 @@ public class PortalIndicatorOverlay extends AbstractMinigameRenderer {
     private SpriteManager spriteManager;
 
     @Inject
-    public PortalIndicatorOverlay(GuardianOfTheRiftOptimizerPlugin plugin) {
+    public PortalIndicatorMimicOverlay(GuardianOfTheRiftOptimizerPlugin plugin) {
         this.plugin = plugin;
         this.setLayer(OverlayLayer.ABOVE_SCENE);
     }
@@ -104,6 +105,7 @@ public class PortalIndicatorOverlay extends AbstractMinigameRenderer {
 
         GuardianOfTheRiftOptimizerConfig config = plugin.getConfig();
         if (!config.isShowTimeSinceLastPortal()) return;
+        if (config.portalPaintLocation() == PaintLocation.INFOBOX) return;
 
         Widget parentWidget = plugin.getClient().getWidget(StaticConstant.MINIGAME_WIDGET_PARENT_ID);
         Widget portalWidget = plugin.getClient().getWidget(StaticConstant.MINIGAME_WIDGET_PORTAL_ID);

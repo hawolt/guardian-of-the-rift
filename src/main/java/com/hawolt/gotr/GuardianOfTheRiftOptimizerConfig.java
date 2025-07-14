@@ -799,6 +799,17 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     String portalConfiguration = "portalConfiguration";
 
     @ConfigItem(
+            keyName = "portalPaintLocation",
+            name = "Overlay Location",
+            description = "Where to draw portal information",
+            position = 0,
+            section = portalConfiguration
+    )
+    default PaintLocation portalPaintLocation() {
+        return PaintLocation.BOTH;
+    }
+
+    @ConfigItem(
             keyName = "portalOutlineEnabled",
             name = "Portal Outline",
             description = "Whether to draw an outline or not",

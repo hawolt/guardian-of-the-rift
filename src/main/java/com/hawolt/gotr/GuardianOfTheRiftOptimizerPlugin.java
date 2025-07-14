@@ -133,7 +133,7 @@ public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
     private OverlayManager overlayManager;
 
     @Inject
-    private PortalIndicatorOverlay portalIndicatorOverlay;
+    private PortalIndicatorMimicOverlay portalIndicatorMimicOverlay;
 
     @Inject
     private HighlightObeliskOverlay highlightGuardianOverlay;
@@ -156,12 +156,12 @@ public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
         this.add(
                 bindingNecklaceIndicatorOverlay,
                 highlightGreatGuardianOverlay,
+                portalIndicatorMimicOverlay,
                 highlightCellTableOverlay,
                 highlightGuardianOverlay,
                 highlightCellTileOverlay,
                 highlightPortalOverlay,
                 necklaceWarningOverlay,
-                portalIndicatorOverlay,
                 inventoryEssenceSlice,
                 bindingNecklaceSlice,
                 pointStatusOverlay,
