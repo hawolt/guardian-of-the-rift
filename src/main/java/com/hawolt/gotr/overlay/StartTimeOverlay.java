@@ -92,7 +92,8 @@ public class StartTimeOverlay extends OverlayPanel implements Slice {
     public Dimension render(Graphics2D graphics2D) {
         if (renderSafetyEvent == null) return null;
         if (
-                minigameState == MinigameState.START ||
+                minigameState == MinigameState.UNKNOWN ||
+                        minigameState == MinigameState.START ||
                         minigameState == MinigameState.ACTIVE ||
                         minigameState == MinigameState.COMPLETE
         ) {
