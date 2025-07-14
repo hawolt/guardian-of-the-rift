@@ -1,8 +1,7 @@
 package com.hawolt.gotr.pathfinding;
 
-import net.runelite.api.Client;
-import net.runelite.api.GameObject;
-import net.runelite.api.Point;
+import net.runelite.api.*;
+import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldArea;
 import net.runelite.api.coords.WorldPoint;
 import org.apache.commons.lang3.tuple.Pair;
@@ -12,6 +11,10 @@ import java.util.Collections;
 import java.util.List;
 
 public class PathCreator {
+
+    public static Pair<List<WorldPoint>, Boolean> pathTo(Pathfinder pathfinder, LocalPoint localPoint) {
+        return pathfinder.pathTo(localPoint);
+    }
 
     public static Pair<List<WorldPoint>, Boolean> pathTo(Pathfinder pathfinder, GameObject gameObject) {
         if (gameObject == null) return Pair.of(Collections.emptyList(), false);
