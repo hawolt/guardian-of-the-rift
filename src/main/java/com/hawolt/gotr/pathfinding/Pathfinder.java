@@ -246,6 +246,10 @@ public class Pathfinder {
         return pathTo(other.getSceneLocation().getX(), other.getSceneLocation().getY(), 1, 1, -1, -1);
     }
 
+    public Pair<List<WorldPoint>, Boolean> pathTo(LocalPoint localPoint) {
+        return pathTo(localPoint.getSceneX(), localPoint.getSceneY(), 1, 1, -1, -1);
+    }
+
     private boolean hasArrived(int baseX, int baseY, int targetX, int targetY, int sizeX, int sizeY, int objConfig, int objID, int[][] flags) {
         int objShape = -1;
         int objRot = 0;

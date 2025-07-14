@@ -2,85 +2,64 @@ package com.hawolt.gotr.overlay;
 
 import com.hawolt.gotr.GuardianOfTheRiftOptimizerConfig;
 import com.hawolt.gotr.GuardianOfTheRiftOptimizerPlugin;
-import com.hawolt.gotr.Slice;
 import com.hawolt.gotr.data.MinigameState;
 import com.hawolt.gotr.data.PaintLocation;
 import com.hawolt.gotr.data.StaticConstant;
 import com.hawolt.gotr.events.RenderSafetyEvent;
+import com.hawolt.gotr.events.minigame.impl.MinigameStateEvent;
 import lombok.AccessLevel;
 import lombok.Getter;
-import net.runelite.api.MenuAction;
+import net.runelite.api.GameState;
 import net.runelite.api.events.ScriptPreFired;
 import net.runelite.api.widgets.Widget;
-import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.ui.overlay.OverlayManager;
-import net.runelite.client.ui.overlay.OverlayMenuEntry;
-import net.runelite.client.ui.overlay.OverlayPanel;
-import net.runelite.client.ui.overlay.OverlayPosition;
-import net.runelite.client.ui.overlay.components.LineComponent;
+import net.runelite.client.game.SpriteManager;
+import net.runelite.client.ui.overlay.OverlayLayer;
+import net.runelite.client.util.ImageUtil;
 
 import javax.inject.Inject;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
-public class PortalIndicatorOverlay extends OverlayPanel implements Slice {
-
-    @Inject
-    protected EventBus bus;
+public class PortalIndicatorMimicOverlay extends AbstractMinigameRenderer {
 
     @Getter(AccessLevel.NONE)
-    private MinigameState minigameState = MinigameState.UNKNOWN;
+    private final int SPRITE_DIMENSION_HEIGHT = 32;
 
     @Getter(AccessLevel.NONE)
-    private final GuardianOfTheRiftOptimizerPlugin plugin;
+    private final int SPRITE_DIMENSION_WIDTH = 32;
 
     @Getter(AccessLevel.NONE)
-    private RenderSafetyEvent renderSafetyEvent;
+    private GuardianOfTheRiftOptimizerPlugin plugin;
 
     @Getter(AccessLevel.NONE)
-    private long lastPortalDespawnTimestamp;
+    private long lastTickTimestamp, lastPortalDespawnTimestamp, lastInternalUpdateTimestamp;
 
     @Getter(AccessLevel.NONE)
     private boolean isFirstPortalThisRound;
 
-    @Override
-    public void startup() {
-        this.bus.register(this);
-    }
-
-    @Override
-    public void shutdown() {
-        this.bus.unregister(this);
-    }
-
-    @Override
-    public boolean isClientThreadRequiredOnStartup() {
-        return false;
-    }
-
-    @Override
-    public boolean isClientThreadRequiredOnShutDown() {
-        return false;
-    }
+    @Getter(AccessLevel.NONE)
+    private MinigameState minigameState = MinigameState.UNKNOWN;
 
     @Inject
-    public PortalIndicatorOverlay(GuardianOfTheRiftOptimizerPlugin plugin) {
+    private SpriteManager spriteManager;
+
+    @Inject
+    public PortalIndicatorMimicOverlay(GuardianOfTheRiftOptimizerPlugin plugin) {
         this.plugin = plugin;
-        this.setPosition(OverlayPosition.TOP_RIGHT);
-        this.getMenuEntries().add(
-                new OverlayMenuEntry(
-                        MenuAction.RUNELITE_OVERLAY_CONFIG,
-                        OverlayManager.OPTION_CONFIGURE,
-                        "Guardians of the Rift Portal Timer"
-                )
-        );
+        this.setLayer(OverlayLayer.ABOVE_SCENE);
     }
 
     @Subscribe
-    public void onRenderSafetyEvent(RenderSafetyEvent event) {
-        this.renderSafetyEvent = event;
+    public void onMinigameStateEvent(MinigameStateEvent event) {
+        this.minigameState = event.getCurrentMinigameState();
     }
 
+    @Subscribe
+    public void onGameState(GameState event) {
+        if (event != GameState.LOGGED_IN) return;
+        this.lastPortalDespawnTimestamp = 0;
+    }
 
     @Subscribe
     public void onScriptPreFired(ScriptPreFired event) {
@@ -107,25 +86,49 @@ public class PortalIndicatorOverlay extends OverlayPanel implements Slice {
 
     @Override
     public Dimension render(Graphics2D graphics2D) {
+        RenderSafetyEvent renderSafetyEvent = getRenderSafetyEvent();
         if (renderSafetyEvent == null) return null;
         if (!renderSafetyEvent.isWidgetAvailable() || renderSafetyEvent.isVolatileState()) return null;
+        this.renderWhenSecure(graphics2D);
+        return null;
+    }
+
+    @Override
+    public void renderWhenSecure(Graphics2D graphics) {
         if (minigameState == MinigameState.COMPLETE ||
                 minigameState == MinigameState.CLOSING ||
                 minigameState == MinigameState.CLOSED ||
                 minigameState == MinigameState.INITIALIZING
         ) {
-            return super.render(graphics2D);
+            return;
         }
 
         GuardianOfTheRiftOptimizerConfig config = plugin.getConfig();
-        if (!config.isShowTimeSinceLastPortal()) return super.render(graphics2D);
-        if (config.portalPaintLocation() == PaintLocation.SCREEN) return super.render(graphics2D);
+        if (!config.isShowTimeSinceLastPortal()) return;
+        if (config.portalPaintLocation() == PaintLocation.INFOBOX) return;
 
         Widget parentWidget = plugin.getClient().getWidget(StaticConstant.MINIGAME_WIDGET_PARENT_ID);
         Widget portalWidget = plugin.getClient().getWidget(StaticConstant.MINIGAME_WIDGET_PORTAL_ID);
 
-        if (parentWidget == null || portalWidget == null) return super.render(graphics2D);
-        if (parentWidget.isHidden() || !portalWidget.isHidden()) return super.render(graphics2D);
+        if (parentWidget == null || portalWidget == null) return;
+        if (parentWidget.isHidden() || !portalWidget.isHidden()) return;
+
+        BufferedImage sprite = spriteManager.getSprite(StaticConstant.MINIGAME_PORTAL_SPRITE_ID, 0);
+        if (sprite == null) return;
+
+        BufferedImage spriteInGrayscale = ImageUtil.grayscaleImage(sprite);
+
+        int spriteLocationX = parentWidget.getRelativeX() + portalWidget.getRelativeX() + 16;
+        int spriteLocationY = parentWidget.getRelativeY() + portalWidget.getRelativeY() + 12;
+
+        graphics.drawImage(
+                spriteInGrayscale,
+                spriteLocationX,
+                spriteLocationY,
+                SPRITE_DIMENSION_WIDTH,
+                SPRITE_DIMENSION_HEIGHT,
+                null
+        );
 
         long elapsedSinceDespawnInMillis = System.currentTimeMillis() - lastPortalDespawnTimestamp;
         long elapsedSinceDespawnInSeconds = elapsedSinceDespawnInMillis / 1000;
@@ -138,15 +141,18 @@ public class PortalIndicatorOverlay extends OverlayPanel implements Slice {
                 formatRemainingTime(elapsedSinceDespawnInSeconds) :
                 "?";
 
-        this.panelComponent.getChildren().add(
-                LineComponent.builder()
-                        .left("Last Portal:")
-                        .right(text)
-                        .rightColor(textColor)
-                        .build()
-        );
+        Rectangle bounds = new Rectangle(
+                spriteLocationX,
+                spriteLocationY + SPRITE_DIMENSION_HEIGHT + 1,
+                SPRITE_DIMENSION_WIDTH,
+                24);
 
-        return super.render(graphics2D);
+        this.drawStringCenteredToBoundingBox(
+                graphics,
+                bounds,
+                text,
+                textColor
+        );
     }
 
     private Color getPortalProbabilityColor(long elapsedSinceDespawnInSeconds) {

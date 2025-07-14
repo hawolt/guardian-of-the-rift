@@ -25,7 +25,8 @@ import java.util.Set;
 @PluginDescriptor(
         name = "Guardians of the Rift Optimizer",
         description = "Various utilities to improve and optimize the Guardians of the Rift minigame",
-        tags = {"minigame", "overlay", "guardians of the rift", "gotr", "minmax", "ehp"}
+        tags = {"minigame", "overlay", "guardians of the rift", "gotr", "minmax", "ehp"},
+        conflicts = "Guardians of the Rift Helper"
 )
 public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
 
@@ -133,10 +134,13 @@ public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
     private OverlayManager overlayManager;
 
     @Inject
-    private PortalIndicatorOverlay portalIndicatorOverlay;
+    private PortalIndicatorMimicOverlay portalIndicatorMimicOverlay;
 
     @Inject
     private HighlightObeliskOverlay highlightGuardianOverlay;
+
+    @Inject
+    private PortalIndicatorOverlay portalIndicatorOverlay;
 
     @Inject
     private InternalDebugOverlay debugOverlay;
@@ -156,12 +160,13 @@ public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
         this.add(
                 bindingNecklaceIndicatorOverlay,
                 highlightGreatGuardianOverlay,
+                portalIndicatorMimicOverlay,
                 highlightCellTableOverlay,
                 highlightGuardianOverlay,
                 highlightCellTileOverlay,
                 highlightPortalOverlay,
-                necklaceWarningOverlay,
                 portalIndicatorOverlay,
+                necklaceWarningOverlay,
                 inventoryEssenceSlice,
                 bindingNecklaceSlice,
                 pointStatusOverlay,

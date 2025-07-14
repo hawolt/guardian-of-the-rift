@@ -1,8 +1,6 @@
 package com.hawolt.gotr;
 
-import com.hawolt.gotr.data.GameStartIndicator;
-import com.hawolt.gotr.data.OptimizationMode;
-import com.hawolt.gotr.data.RuneCraftInfo;
+import com.hawolt.gotr.data.*;
 import net.runelite.client.config.*;
 import net.runelite.client.ui.overlay.OverlayPosition;
 
@@ -24,7 +22,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             section = optimizationModeConfiguration
     )
     default OptimizationMode optimizationMode() {
-        return OptimizationMode.EXPERIENCE;
+        return OptimizationMode.POINTS;
     }
 
     @ConfigSection(
@@ -508,6 +506,17 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigItem(
+            keyName = "gameStartTimerLocation",
+            name = "Start Time Location",
+            description = "Where to draw game start information",
+            position = 0,
+            section = miscellaneousConfiguration
+    )
+    default PaintLocation gameStartLocation() {
+        return PaintLocation.INFOBOX;
+    }
+
+    @ConfigItem(
             keyName = "showGameStartTimer",
             name = "Game Start Timer",
             description = "Replace Guardian Power Bar with a Game Start timer when applicable",
@@ -537,7 +546,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             section = miscellaneousConfiguration
     )
     default boolean isShowBindingNecklaceStatus() {
-        return true;
+        return false;
     }
 
     @Range(
@@ -655,6 +664,17 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             description = "Options to enhance the Cell Tiles"
     )
     String cellTileConfiguration = "cellTileConfiguration";
+
+    @ConfigItem(
+            keyName = "cellTilePriority",
+            name = "Cell Tile Priority",
+            description = "Chose which Cell Tile should be outlined",
+            position = 2,
+            section = cellTileConfiguration
+    )
+    default CellTilePriority cellTilePriority() {
+        return CellTilePriority.BEST;
+    }
 
     @ConfigItem(
             keyName = "cellTilesOutlineEnabled",
@@ -777,6 +797,17 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             description = "Options to enhance the Portal"
     )
     String portalConfiguration = "portalConfiguration";
+
+    @ConfigItem(
+            keyName = "portalPaintLocation",
+            name = "Overlay Location",
+            description = "Where to draw portal information",
+            position = 0,
+            section = portalConfiguration
+    )
+    default PaintLocation portalPaintLocation() {
+        return PaintLocation.SCREEN;
+    }
 
     @ConfigItem(
             keyName = "portalOutlineEnabled",

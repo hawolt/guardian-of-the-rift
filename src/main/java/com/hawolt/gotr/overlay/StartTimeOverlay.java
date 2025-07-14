@@ -4,6 +4,7 @@ import com.hawolt.gotr.GuardianOfTheRiftOptimizerPlugin;
 import com.hawolt.gotr.Slice;
 import com.hawolt.gotr.data.GameStartIndicator;
 import com.hawolt.gotr.data.MinigameState;
+import com.hawolt.gotr.data.PaintLocation;
 import com.hawolt.gotr.data.StaticConstant;
 import com.hawolt.gotr.events.RenderSafetyEvent;
 import com.hawolt.gotr.events.minigame.impl.GameStartingSoonEvent;
@@ -90,7 +91,16 @@ public class StartTimeOverlay extends OverlayPanel implements Slice {
     @Override
     public Dimension render(Graphics2D graphics2D) {
         if (renderSafetyEvent == null) return null;
-        if (!isFallBackRenderRequired) return null;
+        if (
+                minigameState == MinigameState.UNKNOWN ||
+                        minigameState == MinigameState.START ||
+                        minigameState == MinigameState.ACTIVE ||
+                        minigameState == MinigameState.COMPLETE
+        ) {
+            return null;
+        }
+        PaintLocation paintLocation = plugin.getConfig().gameStartLocation();
+        if (paintLocation == PaintLocation.SCREEN || isFallBackRenderRequired) return null;
         if (!renderSafetyEvent.isInGame() || renderSafetyEvent.isVolatileState()) return null;
         long secondsUntilGameStart = TimeUnit.MILLISECONDS.toSeconds(
                 gameWillStartAtTimestamp - System.currentTimeMillis() + StaticConstant.GAME_TICK_DURATION
@@ -150,7 +160,8 @@ public class StartTimeOverlay extends OverlayPanel implements Slice {
         int scriptId = event.getScriptId();
         if (scriptId != StaticConstant.MINIGAME_HUD_UPDATE_SCRIPT_ID) return;
         if (!plugin.getConfig().isShowGameStartTimer()) return;
-        if (isFallBackRenderRequired) return;
+        PaintLocation paintLocation = plugin.getConfig().gameStartLocation();
+        if (paintLocation == PaintLocation.INFOBOX) return;
         this.handleGameStartUpdate();
     }
 
