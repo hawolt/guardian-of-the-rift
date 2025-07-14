@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum CellTile {
+    INACTIVE(43739),
     WEAK(43740),
     MEDIUM(43741),
     STRONG(43742),
