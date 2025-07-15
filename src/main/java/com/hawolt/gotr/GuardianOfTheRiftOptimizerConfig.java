@@ -407,7 +407,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             section = menuSwappingConfiguration
     )
     default boolean isHideApprenticeTalkTo() {
-        return true;
+        return false;
     }
 
     @ConfigItem(
