@@ -24,7 +24,7 @@ public class StaticConstant {
     public static final int BINDING_NECKLACE_ITEM_ID = 5521;
     public static final int MINIGAME_PORTAL_SPRITE_ID = 4368;
     public static final int GAME_DIALOG_WIDGET_GROUP = 229;
-    public static final int GAME_DIALOG_WIDGET_CONTENT = 1;
+    public static final int GAME_DIALOG_WIDGET_CONTENT = 3;
 
     // RUNECRAFT ALTAR IDS
     public static final int RUNECRAFTING_ALTAR_AIR = 34760;
