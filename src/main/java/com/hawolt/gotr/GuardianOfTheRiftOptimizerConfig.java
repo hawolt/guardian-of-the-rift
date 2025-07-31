@@ -9,28 +9,46 @@ import java.awt.*;
 @ConfigGroup("guardiansOfTheRiftOptimizer")
 public interface GuardianOfTheRiftOptimizerConfig extends Config {
     @ConfigSection(
-            position = -1,
-            name = "Optimization Mode",
+            position = -10,
+            name = "Main Configuration",
             description = "Configure how to optimize the Minigame"
     )
-    String optimizationModeConfiguration = "optimizationModeConfiguration";
+    String mainConfiguration = "mainConfiguration";
 
     @ConfigItem(
             keyName = "optimizationMode",
             name = "Optimization",
             description = "The focus of the optimization",
-            section = optimizationModeConfiguration
+            position = 0,
+            section = mainConfiguration
     )
     default OptimizationMode optimizationMode() {
-        return OptimizationMode.POINTS;
+        return OptimizationMode.EVEN_REWARD_POINTS;
     }
 
-    @ConfigSection(
-            position = 0,
-            name = "Rune Configuration",
-            description = "Configure which runes you are crafting on the elemental altars"
+    @ConfigItem(
+            keyName = "cellTilePriority",
+            name = "Charged Cell Placement",
+            description = "Chose which cell tile to outline for the charged cell",
+            position = 5,
+            section = mainConfiguration
     )
-    String combinationRuneConfiguration = "combinationRuneConfiguration";
+    default CellTilePriority cellTilePriority() {
+        return CellTilePriority.BEST;
+    }
+
+    @ConfigItem(
+            keyName = "",
+            name = "<html><div style='width:171px; text-align:center; color: white'>"
+                    + "<br>please select which runes you are<br>going to craft at each elemental<br>altar to allow proper optimization<br> "
+                    + "</div></html>",
+            description = "a thematic break for the configuration.",
+            position = 10,
+            section = mainConfiguration
+    )
+    default char[] combinationRuneLabel() {
+        return new char[0];
+    }
 
     enum AirAlterOptionEnum {
         AIR(RuneCraftInfo.AIR),
@@ -45,11 +63,11 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigItem(
-            position = 0,
+            position = 20,
             keyName = "airAltar",
             name = "Air Altar",
-            description = "The rune to be crafted",
-            section = combinationRuneConfiguration
+            description = "The rune to be crafted, used for optimization",
+            section = mainConfiguration
     )
     default AirAlterOptionEnum airAltar() {
         return AirAlterOptionEnum.AIR;
@@ -68,11 +86,11 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigItem(
-            position = 1,
+            position = 30,
             keyName = "waterAltar",
             name = "Water Altar",
-            description = "The rune to be crafted",
-            section = combinationRuneConfiguration
+            description = "The rune to be crafted, used for optimization",
+            section = mainConfiguration
     )
     default WaterAlterOptionEnum waterAltar() {
         return WaterAlterOptionEnum.WATER;
@@ -91,11 +109,11 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigItem(
-            position = 2,
+            position = 40,
             keyName = "earthAltar",
             name = "Earth Altar",
-            description = "The rune to be crafted",
-            section = combinationRuneConfiguration
+            description = "The rune to be crafted, used for optimization",
+            section = mainConfiguration
     )
     default EarthAlterOptionEnum earthAltar() {
         return EarthAlterOptionEnum.EARTH;
@@ -114,11 +132,11 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigItem(
-            position = 3,
+            position = 50,
             keyName = "fireAltar",
             name = "Fire Altar",
-            description = "The rune to be crafted",
-            section = combinationRuneConfiguration
+            description = "The rune to be crafted, used for optimization",
+            section = mainConfiguration
     )
     default FireAlterOptionEnum fireAltar() {
         return FireAlterOptionEnum.FIRE;
@@ -135,11 +153,11 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigItem(
-            position = 4,
+            position = 60,
             keyName = "cosmicAltar",
             name = "Cosmic Altar",
-            description = "The rune to be crafted",
-            section = combinationRuneConfiguration
+            description = "The rune to be crafted, used for optimization",
+            section = mainConfiguration
     )
     default CosmicAlterOptionEnum cosmicAltar() {
         return CosmicAlterOptionEnum.COSMIC;
@@ -147,9 +165,10 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
 
 
     @ConfigSection(
-            position = 1,
+            position = 0,
             name = "Notifications",
-            description = "Receive Notifications based on the game state"
+            description = "Receive Notifications based on the game state",
+            closedByDefault = true
     )
     String notificationConfiguration = "notificationConfiguration";
 
@@ -205,9 +224,10 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
 
 
     @ConfigSection(
-            position = 2,
+            position = 10,
             name = "Optimal Guardian",
-            description = "Customize the outline for the Optimal Guardian"
+            description = "Customize the outline for the Optimal Guardian",
+            closedByDefault = true
     )
     String optimalGuardianConfiguration = "optimalGuardianConfiguration";
 
@@ -299,9 +319,10 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigSection(
-            position = 3,
+            position = 20,
             name = "Secondary Guardian",
-            description = "Customize the outline for the Secondary Guardian"
+            description = "Customize the outline for the Secondary Guardian",
+            closedByDefault = true
     )
     String secondaryGuardianConfiguration = "secondaryGuardianConfiguration";
 
@@ -393,9 +414,10 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigSection(
-            position = 4,
+            position = 3,
             name = "Menu Swapping",
-            description = "Hide specific Menu Options if conditions match"
+            description = "Hide specific Menu Options if conditions match",
+            closedByDefault = true
     )
     String menuSwappingConfiguration = "menuSwappingConfiguration";
 
@@ -488,9 +510,10 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigSection(
-            position = 5,
+            position = 6,
             name = "Miscellaneous",
-            description = "Various Quality of Life options"
+            description = "Various Quality of Life options",
+            closedByDefault = true
     )
     String miscellaneousConfiguration = "miscellaneousConfiguration";
 
@@ -597,10 +620,23 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
         return OverlayPosition.BOTTOM_LEFT;
     }
 
+    @ConfigItem(
+            keyName = "",
+            name = "<html><div style='width:171px; text-align:center; color: white'>"
+                    + "<br>the following sections are<br>purely cosmetic configuration<br> "
+                    + "</div></html>",
+            description = "a thematic break for the configuration.",
+            position = 9
+    )
+    default char[] cosmeticHintLabel() {
+        return new char[0];
+    }
+
     @ConfigSection(
-            position = 6,
+            position = 50,
             name = "The Great Guardian",
-            description = "Options to enhance The Great Guardian"
+            description = "Options to enhance The Great Guardian",
+            closedByDefault = true
     )
     String theGreatGuardianConfiguration = "theGreatGuardianConfiguration";
 
@@ -659,22 +695,12 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigSection(
-            position = 7,
+            position = 60,
             name = "Cell Tiles",
-            description = "Options to enhance the Cell Tiles"
+            description = "Options to enhance the Cell Tiles",
+            closedByDefault = true
     )
     String cellTileConfiguration = "cellTileConfiguration";
-
-    @ConfigItem(
-            keyName = "cellTilePriority",
-            name = "Cell Tile Priority",
-            description = "Chose which Cell Tile should be outlined",
-            position = 2,
-            section = cellTileConfiguration
-    )
-    default CellTilePriority cellTilePriority() {
-        return CellTilePriority.BEST;
-    }
 
     @ConfigItem(
             keyName = "cellTilesOutlineEnabled",
@@ -731,9 +757,10 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigSection(
-            position = 8,
+            position = 70,
             name = "Uncharged Cell Table",
-            description = "Options to enhance the Uncharged Cell Table"
+            description = "Options to enhance the Uncharged Cell Table",
+            closedByDefault = true
     )
     String unchargedCellTableConfiguration = "unchargedCellTableConfiguration";
 
@@ -792,9 +819,10 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigSection(
-            position = 9,
+            position = 80,
             name = "Portal",
-            description = "Options to enhance the Portal"
+            description = "Options to enhance the Portal",
+            closedByDefault = true
     )
     String portalConfiguration = "portalConfiguration";
 
@@ -886,9 +914,10 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
     }
 
     @ConfigSection(
-            position = 10,
+            position = 90,
             name = "Deposit Pool",
-            description = "Options to enhance the Deposit Pool"
+            description = "Options to enhance the Deposit Pool",
+            closedByDefault = true
     )
     String depositPoolConfiguration = "depositPoolConfiguration";
 
@@ -947,10 +976,23 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
         return 5;
     }
 
+    @ConfigItem(
+            keyName = "",
+            name = "<html><div style='width:171px; text-align:center; color: white'>"
+                    + "<br>the following section is<br>for debugging development<br> "
+                    + "</div></html>",
+            description = "a thematic break for the configuration.",
+            position = 95
+    )
+    default char[] debuggingHintLabel() {
+        return new char[0];
+    }
+
     @ConfigSection(
-            position = 11,
+            position = 100,
             name = "Debugging",
-            description = "Options to display additional information"
+            description = "Options to display additional information",
+            closedByDefault = true
     )
     String debugConfiguration = "debugConfiguration";
 
@@ -959,7 +1001,8 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             keyName = "enableInternalWeightDebugging",
             name = "Internal Weight",
             description = "Toggle internal weight debugging",
-            section = debugConfiguration
+            section = debugConfiguration,
+            warning = "Only used for development."
     )
     default boolean enableWeightDebugging() {
         return false;
@@ -970,7 +1013,8 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             keyName = "enableOptimalPathDebugging",
             name = "Path to Optimal Guardian",
             description = "Toggle Optimal Path debugging",
-            section = debugConfiguration
+            section = debugConfiguration,
+            warning = "Only used for development."
     )
     default boolean enableOptimalPathDebugging() {
         return false;
@@ -981,7 +1025,8 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             keyName = "enableSecondaryPathDebugging",
             name = "Path to Secondary Guardian",
             description = "Toggle Secondary Path debugging",
-            section = debugConfiguration
+            section = debugConfiguration,
+            warning = "Only used for development."
     )
     default boolean enableSecondaryPathDebugging() {
         return false;
