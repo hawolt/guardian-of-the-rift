@@ -88,6 +88,7 @@ public class StartTimeOverlay extends OverlayPanel implements Slice {
     @Override
     public Dimension render(Graphics2D graphics2D) {
         if (renderSafetyEvent == null) return null;
+        if (!renderSafetyEvent.isInGame()) return null;
         if (
                 minigameState == MinigameState.UNKNOWN ||
                         minigameState == MinigameState.START ||
@@ -101,7 +102,8 @@ public class StartTimeOverlay extends OverlayPanel implements Slice {
         long secondsUntilGameStart = TimeUnit.MILLISECONDS.toSeconds(
                 gameWillStartAtTimestamp - System.currentTimeMillis() + StaticConstant.GAME_TICK_DURATION
         );
-        String timeUntilGameStart = secondsUntilGameStart < 0 ? "?" : String.valueOf(secondsUntilGameStart);
+        if (secondsUntilGameStart < 0) return null;
+        String timeUntilGameStart = String.valueOf(secondsUntilGameStart);
         this.panelComponent.getChildren().add(
                 LineComponent.builder()
                         .left("Game Starting in:")
