@@ -10,9 +10,7 @@ import com.hawolt.gotr.pathfinding.PathCreator;
 import com.hawolt.gotr.pathfinding.Pathfinder;
 import lombok.AccessLevel;
 import lombok.Getter;
-import net.runelite.api.ChatMessageType;
-import net.runelite.api.GameObject;
-import net.runelite.api.Perspective;
+import net.runelite.api.*;
 import net.runelite.api.Point;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.ChatMessage;
@@ -71,8 +69,18 @@ public class HighlightPortalOverlay extends AbstractMinigameRenderer {
     @Override
     public void shutdown() {
         super.shutdown();
+        this.resetPortal();
+    }
+
+    private void resetPortal() {
         this.portal = null;
         this.plugin.getClient().clearHintArrow();
+    }
+
+    @Subscribe
+    public void onGameState(GameState gameState) {
+        if (gameState != GameState.LOGGING_IN && gameState != GameState.HOPPING) return;
+        this.resetPortal();
     }
 
     @Subscribe
@@ -127,8 +135,7 @@ public class HighlightPortalOverlay extends AbstractMinigameRenderer {
     public void onGameObjectDespawned(GameObjectDespawned event) {
         GameObject gameObject = event.getGameObject();
         if (gameObject.getId() != StaticConstant.MINIGAME_PORTAL_OBJECT_ID) return;
-        this.plugin.getClient().clearHintArrow();
-        this.portal = null;
+        this.resetPortal();
     }
 
     @Subscribe

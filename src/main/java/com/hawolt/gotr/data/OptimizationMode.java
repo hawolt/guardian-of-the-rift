@@ -1,5 +1,5 @@
 package com.hawolt.gotr.data;
 
 public enum OptimizationMode {
-    EXPERIENCE, POINTS
+    EXPERIENCE, EVEN_REWARD_POINTS
 }

@@ -86,7 +86,7 @@ public class ObeliskAnalysis {
         switch (optimizationMode) {
             case EXPERIENCE:
                 return calculateExperienceWeight();
-            case POINTS:
+            case EVEN_REWARD_POINTS:
                 return calculatePointWeight();
         }
         throw new RuntimeException("Unknown optimization mode " + optimizationMode);
