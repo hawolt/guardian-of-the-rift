@@ -49,6 +49,7 @@ public class HighlightCellTableOverlay extends AbstractMinigameRenderer {
     @Override
     public void renderWhenSecure(Graphics2D graphics2D) {
         if (unchargedCellTable == null) return;
+        if (!getRenderSafetyEvent().isWidgetAvailable()) return;
         GuardianOfTheRiftOptimizerConfig config = plugin.getConfig();
         if (!config.isCellTableOutlineEnabled()) return;
         int availableUnchargedCells = this.plugin.getInventoryEssenceSlice().getAvailableUnchargedCells();
