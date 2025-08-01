@@ -46,8 +46,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             position = 10,
             section = mainConfiguration
     )
-    default char[] combinationRuneLabel() {
-        return new char[0];
+    default void combinationRuneLabel() {
     }
 
     enum AirAlterOptionEnum {
@@ -628,8 +627,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             description = "a thematic break for the configuration.",
             position = 9
     )
-    default char[] cosmeticHintLabel() {
-        return new char[0];
+    default void cosmeticHintLabel() {
     }
 
     @ConfigSection(
@@ -984,8 +982,7 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
             description = "a thematic break for the configuration.",
             position = 95
     )
-    default char[] debuggingHintLabel() {
-        return new char[0];
+    default void debuggingHintLabel() {
     }
 
     @ConfigSection(
