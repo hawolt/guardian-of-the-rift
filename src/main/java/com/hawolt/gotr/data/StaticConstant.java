@@ -41,6 +41,7 @@ public class StaticConstant {
     public static final int RUNECRAFTING_ALTAR_MIND = 34761;
 
     // MINIGAME INTERNALS
+    public static final int MINIGAME_POINT_CAP = 1000;
     public static final int MINIGAME_REGION_ID = 14484;
     public static final int MINIGAME_HUD_UPDATE_SCRIPT_ID = 5980;
     public static final int MINIGAME_ACTIVE_GUARDIAN_ANIMATION_ID = 9363;
@@ -49,8 +50,6 @@ public class StaticConstant {
     public static final int MINIGAME_WIDGET_GROUP_ID = 746;
     public static final int MINIGAME_WIDGET_CHILD_GAME_ID = 1;
     public static final int MINIGAME_WIDGET_POWER_TEXT_WIDGET_ID = 18;
-    public static final int MINIGAME_WIDGET_ELEMENTAL_TEXT_WIDGET_ID = 21;
-    public static final int MINIGAME_WIDGET_CATALYTIC_TEXT_WIDGET_ID = 24;
 
     // MINIGAME WIDGETS IDS
     public static final int MINIGAME_WIDGET_PARENT_ID = 48889858;

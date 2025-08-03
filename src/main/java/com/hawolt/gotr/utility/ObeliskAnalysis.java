@@ -83,32 +83,6 @@ public class ObeliskAnalysis {
                 pathPair.getRight()
         );
 
-        switch (optimizationMode) {
-            case EXPERIENCE:
-                return calculateExperienceWeight();
-            case EVEN_REWARD_POINTS:
-                return calculatePointWeight();
-        }
-        throw new RuntimeException("Unknown optimization mode " + optimizationMode);
-    }
-
-    private double calculatePointWeight() {
-        double elementalRewardPoints = pointStatus.getElementalRewardPoints() + (pointStatus.getElementalPoints() / 100D);
-        double catalyticRewardPoints = pointStatus.getCatalyticRewardPoints() + (pointStatus.getCatalyticPoints() / 100D);
-        int outside = normalizeTileCount(pathToGuardian.size());
-        int inside = normalizeTileCount(obelisk.getTileDistance()) << 1;
-        this.normalizedTileDistance = outside;
-        long timeToWalk = (outside + inside) * StaticConstant.GAME_TICK_DURATION;
-        if (elementalRewardPoints > catalyticRewardPoints) {
-            return obelisk.getTypeAssociation() == TypeAssociation.CATALYTIC ? (1D / timeToWalk) * 100000 : 0;
-        } else if (catalyticRewardPoints > elementalRewardPoints) {
-            return obelisk.getTypeAssociation() == TypeAssociation.ELEMENTAL ? (1D / timeToWalk) * 100000 : 0;
-        } else {
-            return calculateExperienceWeight();
-        }
-    }
-
-    private double calculateExperienceWeight() {
         int availableEmptyInventorySlots = plugin.getInventoryEssenceSlice().getEmptyInventorySlots();
         int availableEssenceInPouches = plugin.getPouchEssenceSlice().getAvailableEssenceInPouches();
         int availableEssenceInInventory = plugin.getInventoryEssenceSlice().getEssenceInInventory();
@@ -122,9 +96,46 @@ public class ObeliskAnalysis {
                 runeCraftInfo
         );
 
-        int totalEssence = availableEssenceInInventory + availableEssenceInPouches;
         double totalRuneYield = simulator.simulateTotalCraftedRunes();
 
+        switch (optimizationMode) {
+            case EXPERIENCE:
+                return calculateExperienceWeight(totalRuneYield);
+            case EVEN_REWARD_POINTS:
+                return calculatePointWeight(totalRuneYield);
+        }
+        throw new RuntimeException("Unknown optimization mode " + optimizationMode);
+    }
+
+    private double calculatePointWeight(double totalRuneYield) {
+        double elementalRewardPoints = pointStatus.getElementalRewardPoints() + (pointStatus.getElementalPoints() / 100D);
+        double catalyticRewardPoints = pointStatus.getCatalyticRewardPoints() + (pointStatus.getCatalyticPoints() / 100D);
+
+        int outside = normalizeTileCount(pathToGuardian.size());
+        int inside = normalizeTileCount(obelisk.getTileDistance()) << 1;
+        this.normalizedTileDistance = outside;
+        long timeToWalk = (outside + inside) * StaticConstant.GAME_TICK_DURATION;
+
+        double potentialPointGain = runeCraftInfo.getGuardianStone().getPointMultiplier() * totalRuneYield;
+        boolean isExceedingCapElemental = (pointStatus.getElementalPoints() + potentialPointGain) > 1000;
+        boolean isExceedingCapCatalytic = (pointStatus.getCatalyticPoints() + potentialPointGain) > 1000;
+
+        if (isExceedingCapElemental && !isExceedingCapCatalytic) {
+            return obelisk.getTypeAssociation() == TypeAssociation.CATALYTIC ? (1D / timeToWalk) * 100000 : 0;
+        } else if (isExceedingCapCatalytic && !isExceedingCapElemental) {
+            return obelisk.getTypeAssociation() == TypeAssociation.ELEMENTAL ? (1D / timeToWalk) * 100000 : 0;
+        }
+
+        if (elementalRewardPoints > catalyticRewardPoints) {
+            return obelisk.getTypeAssociation() == TypeAssociation.CATALYTIC ? (1D / timeToWalk) * 100000 : 0;
+        } else if (catalyticRewardPoints > elementalRewardPoints) {
+            return obelisk.getTypeAssociation() == TypeAssociation.ELEMENTAL ? (1D / timeToWalk) * 100000 : 0;
+        } else {
+            return calculateExperienceWeight(totalRuneYield);
+        }
+    }
+
+    private double calculateExperienceWeight(double totalRuneYield) {
         int outside = normalizeTileCount(pathToGuardian.size());
         int inside = normalizeTileCount(obelisk.getTileDistance()) << 1;
         int cellExperienceReward = plugin.getInventoryEssenceSlice().isUnchargedCellAvailable() ?
@@ -138,7 +149,7 @@ public class ObeliskAnalysis {
         double baseExperienceYield = (cellExperienceReward + (runeCraftInfo.getBaseExperience() * totalRuneYield));
 
         double downGradeExperience = runeCraftInfo.isCombinationRune() ?
-                cellExperienceReward + (runeCraftInfo.getBaseRuneCraftInfo().getBaseExperience() * totalEssence) :
+                cellExperienceReward + (runeCraftInfo.getBaseRuneCraftInfo().getBaseExperience() * totalRuneYield) :
                 baseExperienceYield;
 
         if (!runeCraftInfo.isCombinationRune()) {
