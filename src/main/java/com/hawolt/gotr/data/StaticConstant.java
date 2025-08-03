@@ -72,6 +72,12 @@ public class StaticConstant {
     // MINIGAME ITEMS OTHER
     public static final int MINIGAME_UNCHARGED_CELL_ID = 26882;
 
+    // MINIGAME BOUNDARIES
+    public static final int HUGE_GUARDRIAN_REMAINS_AREA_WEST_BOUNDARY = 3587;
+    public static final int HUGE_GUARDRIAN_REMAINS_AREA_EAST_BOUNDARY = 3594;
+    public static final int HUGE_GUARDRIAN_REMAINS_AREA_NORTH_BOUNDARY = 9516;
+    public static final int HUGE_GUARDRIAN_REMAINS_AREA_SOUTH_BOUNDARY = 9496;
+
     // MINIGAME OBELISK OBJECTS
     public static final int MINIGAME_AIR_OBELISK_ID = 43701;
     public static final int MINIGAME_MIND_OBELISK_ID = 43705;

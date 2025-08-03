@@ -4,12 +4,12 @@ import com.hawolt.gotr.AbstractPluginSlice;
 import com.hawolt.gotr.GuardianOfTheRiftOptimizerConfig;
 import com.hawolt.gotr.data.GameStartIndicator;
 import com.hawolt.gotr.data.MinigameState;
+import com.hawolt.gotr.data.StaticConstant;
 import com.hawolt.gotr.events.FragmentAmountUpdateEvent;
 import com.hawolt.gotr.events.minigame.impl.GameStartingSoonEvent;
 import com.hawolt.gotr.events.minigame.impl.MinigameStateEvent;
 import com.hawolt.gotr.events.minigame.impl.PortalSpawnEvent;
 import net.runelite.client.Notifier;
-import net.runelite.client.config.Notification;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 
@@ -38,10 +38,19 @@ public class NotificationSlice extends AbstractPluginSlice {
 
     }
 
+    private boolean isPlayerInPortalArea() {
+        int playerX = client.getLocalPlayer().getWorldLocation().getX();
+        int playerY = client.getLocalPlayer().getWorldLocation().getY();
+        return playerX > StaticConstant.HUGE_GUARDRIAN_REMAINS_AREA_WEST_BOUNDARY &&
+                playerX < StaticConstant.HUGE_GUARDRIAN_REMAINS_AREA_EAST_BOUNDARY &&
+                playerY < StaticConstant.HUGE_GUARDRIAN_REMAINS_AREA_NORTH_BOUNDARY &&
+                playerY > StaticConstant.HUGE_GUARDRIAN_REMAINS_AREA_SOUTH_BOUNDARY;
+    }
+
     @Subscribe
     public void onPortalSpawnEvent(PortalSpawnEvent event) {
         GuardianOfTheRiftOptimizerConfig config = plugin.getConfig();
-        if (!config.notifyOnPortalSpawn().isEnabled()) return;
+        if (!config.notifyOnPortalSpawn().isEnabled() || isPlayerInPortalArea()) return;
         this.notifier.notify("A portal has spawned");
     }
 
