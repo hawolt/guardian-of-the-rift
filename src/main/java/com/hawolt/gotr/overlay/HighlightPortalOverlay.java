@@ -115,6 +115,7 @@ public class HighlightPortalOverlay extends AbstractMinigameRenderer {
     public void onGameTick(GameTick tick) {
         WorldPoint current = plugin.getClient().getLocalPlayer().getWorldLocation();
         RenderSafetyEvent renderSafetyEvent = getRenderSafetyEvent();
+        if (renderSafetyEvent == null) return;
         if (!renderSafetyEvent.isWidgetAvailable()) return;
         if (worldPoint == null || !worldPoint.equals(current)) {
             this.updatePathToPortal();
@@ -152,8 +153,16 @@ public class HighlightPortalOverlay extends AbstractMinigameRenderer {
         if (!getRenderSafetyEvent().isWidgetAvailable()) return;
         GuardianOfTheRiftOptimizerConfig config = plugin.getConfig();
         this.renderPortalOutline(config);
-        this.renderPortalTime(config, graphics2D);
-        this.renderPortalRunTime(config, graphics2D);
+
+        int ticksSinceEvent = plugin.getClient().getTickCount() - portalSpawnedOnTick;
+        int ticksLeftToReach = (normalizedTileDistance >> 1) + 1;
+        int ticksLeftUntilUpdate = portalTicksRemaining - ticksSinceEvent;
+        int ticksAvailable = ticksLeftUntilUpdate - ticksLeftToReach;
+        long elapsedSinceLastTick = System.currentTimeMillis() - lastTickTimestamp;
+        long remaining = (ticksLeftUntilUpdate * StaticConstant.GAME_TICK_DURATION) - elapsedSinceLastTick;
+
+        this.renderPortalTime(config, graphics2D, ticksAvailable, remaining);
+        this.renderPortalRunTime(config, graphics2D, remaining);
     }
 
     private void renderPortalOutline(GuardianOfTheRiftOptimizerConfig config) {
@@ -170,15 +179,8 @@ public class HighlightPortalOverlay extends AbstractMinigameRenderer {
         }
     }
 
-    private void renderPortalTime(GuardianOfTheRiftOptimizerConfig config, Graphics2D graphics2D) {
+    private void renderPortalTime(GuardianOfTheRiftOptimizerConfig config, Graphics2D graphics2D, int ticksAvailable, long remaining) {
         if (!config.isShowTimeSinceLastPortal()) return;
-
-        int ticksSinceEvent = plugin.getClient().getTickCount() - portalSpawnedOnTick;
-        int ticksLeftToReach = (normalizedTileDistance >> 1) + 1;
-        int ticksLeftUntilUpdate = portalTicksRemaining - ticksSinceEvent;
-        int ticksAvailable = ticksLeftUntilUpdate - ticksLeftToReach;
-        long elapsedSinceLastTick = System.currentTimeMillis() - lastTickTimestamp;
-        long remaining = (ticksLeftUntilUpdate * StaticConstant.GAME_TICK_DURATION) - elapsedSinceLastTick;
 
         if (remaining < 0) return;
 
@@ -204,8 +206,10 @@ public class HighlightPortalOverlay extends AbstractMinigameRenderer {
         OverlayUtil.renderTextLocation(graphics2D, canvasTextLocation, formatted, color);
     }
 
-    private void renderPortalRunTime(GuardianOfTheRiftOptimizerConfig config, Graphics2D graphics2D) {
+    private void renderPortalRunTime(GuardianOfTheRiftOptimizerConfig config, Graphics2D graphics2D, long remaining) {
         if (!config.isPortalRunTimeEnabled()) return;
+
+        if (remaining < 0) return;
 
         long timeToRun = (normalizedTileDistance >> 1)
                 * StaticConstant.GAME_TICK_DURATION
