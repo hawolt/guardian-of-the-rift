@@ -11,6 +11,7 @@ public enum RuneCraftInfo {
             5,
             1,
             ItemID.AIRRUNE,
+            GuardianStone.ELEMENTAL,
             StaticConstant.RUNECRAFTING_ALTAR_AIR,
             false,
             null
@@ -20,6 +21,7 @@ public enum RuneCraftInfo {
             5.5,
             2,
             ItemID.MINDRUNE,
+            GuardianStone.CATALYTIC,
             StaticConstant.RUNECRAFTING_ALTAR_MIND,
             false,
             null
@@ -29,6 +31,7 @@ public enum RuneCraftInfo {
             6,
             5,
             ItemID.WATERRUNE,
+            GuardianStone.ELEMENTAL,
             StaticConstant.RUNECRAFTING_ALTAR_WATER,
             false,
             null
@@ -38,6 +41,7 @@ public enum RuneCraftInfo {
             8,
             6,
             ItemID.MISTRUNE,
+            GuardianStone.POLYELEMENTAL,
             StaticConstant.RUNECRAFTING_ALTAR_AIR,
             true,
             RuneCraftInfo.AIR
@@ -47,6 +51,7 @@ public enum RuneCraftInfo {
             8.5,
             6,
             ItemID.MISTRUNE,
+            GuardianStone.POLYELEMENTAL,
             StaticConstant.RUNECRAFTING_ALTAR_WATER,
             true,
             RuneCraftInfo.WATER
@@ -56,6 +61,7 @@ public enum RuneCraftInfo {
             6.5,
             9,
             ItemID.EARTHRUNE,
+            GuardianStone.ELEMENTAL,
             StaticConstant.RUNECRAFTING_ALTAR_EARTH,
             false,
             null
@@ -65,6 +71,7 @@ public enum RuneCraftInfo {
             8.3,
             10,
             ItemID.DUSTRUNE,
+            GuardianStone.POLYELEMENTAL,
             StaticConstant.RUNECRAFTING_ALTAR_AIR,
             true,
             RuneCraftInfo.AIR
@@ -74,6 +81,7 @@ public enum RuneCraftInfo {
             9,
             10,
             ItemID.DUSTRUNE,
+            GuardianStone.POLYELEMENTAL,
             StaticConstant.RUNECRAFTING_ALTAR_EARTH,
             true,
             RuneCraftInfo.EARTH
@@ -83,6 +91,7 @@ public enum RuneCraftInfo {
             9.3,
             13,
             ItemID.MUDRUNE,
+            GuardianStone.POLYELEMENTAL,
             StaticConstant.RUNECRAFTING_ALTAR_WATER,
             true,
             RuneCraftInfo.WATER
@@ -92,6 +101,7 @@ public enum RuneCraftInfo {
             9.5,
             13,
             ItemID.MUDRUNE,
+            GuardianStone.POLYELEMENTAL,
             StaticConstant.RUNECRAFTING_ALTAR_EARTH,
             true,
             RuneCraftInfo.EARTH
@@ -101,6 +111,7 @@ public enum RuneCraftInfo {
             7,
             14,
             ItemID.FIRERUNE,
+            GuardianStone.ELEMENTAL,
             StaticConstant.RUNECRAFTING_ALTAR_FIRE,
             false,
             null
@@ -110,6 +121,7 @@ public enum RuneCraftInfo {
             8.5,
             15,
             ItemID.SMOKERUNE,
+            GuardianStone.POLYELEMENTAL,
             StaticConstant.RUNECRAFTING_ALTAR_AIR,
             true,
             RuneCraftInfo.AIR
@@ -119,6 +131,7 @@ public enum RuneCraftInfo {
             9.5,
             15,
             ItemID.SMOKERUNE,
+            GuardianStone.POLYELEMENTAL,
             StaticConstant.RUNECRAFTING_ALTAR_FIRE,
             true,
             RuneCraftInfo.FIRE
@@ -128,6 +141,7 @@ public enum RuneCraftInfo {
             9.3,
             19,
             ItemID.STEAMRUNE,
+            GuardianStone.POLYELEMENTAL,
             StaticConstant.RUNECRAFTING_ALTAR_WATER,
             true,
             RuneCraftInfo.WATER
@@ -137,6 +151,7 @@ public enum RuneCraftInfo {
             10,
             19,
             ItemID.STEAMRUNE,
+            GuardianStone.POLYELEMENTAL,
             StaticConstant.RUNECRAFTING_ALTAR_FIRE,
             true,
             RuneCraftInfo.FIRE
@@ -146,6 +161,7 @@ public enum RuneCraftInfo {
             7.5,
             20,
             ItemID.BODYRUNE,
+            GuardianStone.CATALYTIC,
             StaticConstant.RUNECRAFTING_ALTAR_BODY,
             false,
             null
@@ -155,6 +171,7 @@ public enum RuneCraftInfo {
             10,
             23,
             ItemID.LAVARUNE,
+            GuardianStone.POLYELEMENTAL,
             StaticConstant.RUNECRAFTING_ALTAR_EARTH,
             true,
             RuneCraftInfo.EARTH
@@ -164,6 +181,7 @@ public enum RuneCraftInfo {
             10.5,
             23,
             ItemID.LAVARUNE,
+            GuardianStone.POLYELEMENTAL,
             StaticConstant.RUNECRAFTING_ALTAR_FIRE,
             true,
             RuneCraftInfo.FIRE
@@ -173,6 +191,7 @@ public enum RuneCraftInfo {
             8,
             27,
             ItemID.COSMICRUNE,
+            GuardianStone.CATALYTIC,
             StaticConstant.RUNECRAFTING_ALTAR_COSMIC,
             false,
             null
@@ -182,6 +201,7 @@ public enum RuneCraftInfo {
             8.5,
             35,
             ItemID.CHAOSRUNE,
+            GuardianStone.CATALYTIC,
             StaticConstant.RUNECRAFTING_ALTAR_CHAOS,
             false,
             null
@@ -191,6 +211,7 @@ public enum RuneCraftInfo {
             9,
             44,
             ItemID.NATURERUNE,
+            GuardianStone.CATALYTIC,
             StaticConstant.RUNECRAFTING_ALTAR_NATURE,
             false,
             null
@@ -200,6 +221,7 @@ public enum RuneCraftInfo {
             9.5,
             54,
             ItemID.LAWRUNE,
+            GuardianStone.CATALYTIC,
             StaticConstant.RUNECRAFTING_ALTAR_LAW,
             false,
             null
@@ -209,6 +231,7 @@ public enum RuneCraftInfo {
             10,
             65,
             ItemID.DEATHRUNE,
+            GuardianStone.CATALYTIC,
             StaticConstant.RUNECRAFTING_ALTAR_DEATH,
             false,
             null
@@ -218,6 +241,7 @@ public enum RuneCraftInfo {
             10.5,
             77,
             ItemID.BLOODRUNE,
+            GuardianStone.CATALYTIC,
             StaticConstant.RUNECRAFTING_ALTAR_BLOOD,
             false,
             null
@@ -227,6 +251,7 @@ public enum RuneCraftInfo {
             20,
             90,
             ItemID.AETHERRUNE,
+            GuardianStone.POLYCATALYTIC,
             StaticConstant.RUNECRAFTING_ALTAR_COSMIC,
             true,
             RuneCraftInfo.COSMIC
@@ -234,6 +259,7 @@ public enum RuneCraftInfo {
 
     private final int guardianGameObjectId, levelRequired, spriteId, altarId;
     private final RuneCraftInfo baseRuneCraftInfo;
+    private final GuardianStone guardianStone;
     private final boolean isCombinationRune;
     private final double baseExperience;
 
@@ -242,6 +268,7 @@ public enum RuneCraftInfo {
             double baseExperience,
             int levelRequired,
             int spriteId,
+            GuardianStone guardianStone,
             int altarId,
             boolean isCombinationRune,
             RuneCraftInfo baseRuneCraftInfo
@@ -250,6 +277,7 @@ public enum RuneCraftInfo {
         this.baseRuneCraftInfo = baseRuneCraftInfo;
         this.isCombinationRune = isCombinationRune;
         this.baseExperience = baseExperience;
+        this.guardianStone = guardianStone;
         this.levelRequired = levelRequired;
         this.spriteId = spriteId;
         this.altarId = altarId;
