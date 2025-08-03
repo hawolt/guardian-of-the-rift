@@ -194,9 +194,9 @@ public class HighlightObeliskOverlay extends AbstractMinigameRenderer {
         if (canvasTextLocation == null) return;
 
         Color color;
-        if (ticksAvailable > 3) {
+        if (ticksAvailable > 4) {
             color = Color.WHITE;
-        } else if (ticksAvailable >= 0) {
+        } else if (ticksAvailable > 0) {
             color = Color.ORANGE;
         } else {
             color = Color.RED;
