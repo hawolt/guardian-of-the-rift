@@ -87,6 +87,7 @@ public class ObeliskAnalysis {
         int availableEssenceInPouches = plugin.getPouchEssenceSlice().getAvailableEssenceInPouches();
         int availableEssenceInInventory = plugin.getInventoryEssenceSlice().getEssenceInInventory();
         int bindingNecklaceCharges = plugin.getBindingNecklaceSlice().getBindingNecklaceCharges();
+        int totalEssence = availableEssenceInInventory + availableEssenceInPouches;
 
         Simulator simulator = Simulator.createInstance(
                 availableEssenceInInventory,
@@ -100,14 +101,14 @@ public class ObeliskAnalysis {
 
         switch (optimizationMode) {
             case EXPERIENCE:
-                return calculateExperienceWeight(totalRuneYield);
+                return calculateExperienceWeight(totalEssence, totalRuneYield);
             case EVEN_REWARD_POINTS:
-                return calculatePointWeight(totalRuneYield);
+                return calculatePointWeight(totalEssence, totalRuneYield);
         }
         throw new RuntimeException("Unknown optimization mode " + optimizationMode);
     }
 
-    private double calculatePointWeight(double totalRuneYield) {
+    private double calculatePointWeight(int totalEssence, double totalRuneYield) {
         double elementalRewardPoints = pointStatus.getElementalRewardPoints() + (pointStatus.getElementalPoints() / 100D);
         double catalyticRewardPoints = pointStatus.getCatalyticRewardPoints() + (pointStatus.getCatalyticPoints() / 100D);
 
@@ -117,8 +118,22 @@ public class ObeliskAnalysis {
         long timeToWalk = (outside + inside) * StaticConstant.GAME_TICK_DURATION;
 
         double potentialPointGain = runeCraftInfo.getGuardianStone().getPointMultiplier() * totalRuneYield;
-        boolean isExceedingCapElemental = (pointStatus.getElementalPoints() + potentialPointGain) > 1000;
-        boolean isExceedingCapCatalytic = (pointStatus.getCatalyticPoints() + potentialPointGain) > 1000;
+        double downGradePointGain = runeCraftInfo.isCombinationRune() ?
+                runeCraftInfo.getBaseRuneCraftInfo().getGuardianStone().getPointMultiplier() * totalEssence :
+                0;
+
+        if (!runeCraftInfo.isCombinationRune()) {
+            this.isDowngradeBetter = false;
+        } else {
+            this.isDowngradeBetter = downGradePointGain > potentialPointGain;
+        }
+
+        double plannedPointGain = isDowngradeBetter ?
+                downGradePointGain :
+                potentialPointGain;
+
+        boolean isExceedingCapElemental = (pointStatus.getElementalPoints() + plannedPointGain) > 1000;
+        boolean isExceedingCapCatalytic = (pointStatus.getCatalyticPoints() + plannedPointGain) > 1000;
 
         if (isExceedingCapElemental && !isExceedingCapCatalytic) {
             return obelisk.getTypeAssociation() == TypeAssociation.CATALYTIC ? (1D / timeToWalk) * 100000 : 0;
@@ -131,11 +146,11 @@ public class ObeliskAnalysis {
         } else if (catalyticRewardPoints > elementalRewardPoints) {
             return obelisk.getTypeAssociation() == TypeAssociation.ELEMENTAL ? (1D / timeToWalk) * 100000 : 0;
         } else {
-            return calculateExperienceWeight(totalRuneYield);
+            return calculateExperienceWeight(totalEssence, totalRuneYield);
         }
     }
 
-    private double calculateExperienceWeight(double totalRuneYield) {
+    private double calculateExperienceWeight(int totalEssence, double totalRuneYield) {
         int outside = normalizeTileCount(pathToGuardian.size());
         int inside = normalizeTileCount(obelisk.getTileDistance()) << 1;
         int cellExperienceReward = plugin.getInventoryEssenceSlice().isUnchargedCellAvailable() ?
@@ -149,7 +164,7 @@ public class ObeliskAnalysis {
         double baseExperienceYield = (cellExperienceReward + (runeCraftInfo.getBaseExperience() * totalRuneYield));
 
         double downGradeExperience = runeCraftInfo.isCombinationRune() ?
-                cellExperienceReward + (runeCraftInfo.getBaseRuneCraftInfo().getBaseExperience() * totalRuneYield) :
+                cellExperienceReward + (runeCraftInfo.getBaseRuneCraftInfo().getBaseExperience() * totalEssence) :
                 baseExperienceYield;
 
         if (!runeCraftInfo.isCombinationRune()) {
