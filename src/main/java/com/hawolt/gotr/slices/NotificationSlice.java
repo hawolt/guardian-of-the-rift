@@ -51,7 +51,7 @@ public class NotificationSlice extends AbstractPluginSlice {
     public void onPortalSpawnEvent(PortalSpawnEvent event) {
         GuardianOfTheRiftOptimizerConfig config = plugin.getConfig();
         if (!config.notifyOnPortalSpawn().isEnabled() || isPlayerInPortalArea()) return;
-        this.notifier.notify("A portal has spawned");
+        this.notifier.notify(config.notifyOnPortalSpawn(), "A portal has spawned");
     }
 
     @Subscribe
