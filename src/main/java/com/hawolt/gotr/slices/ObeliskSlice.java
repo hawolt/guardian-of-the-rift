@@ -110,6 +110,12 @@ public class ObeliskSlice extends AbstractPluginSlice {
         this.worldPoint = current;
     }
 
+    public boolean isObeliskActive(Obelisk obelisk) {
+        if (obelisk == null) return false;
+        return activeObeliskGameObjects.stream()
+                .anyMatch(gameObject -> gameObject.getId() == obelisk.getGameObjectId());
+    }
+
     private void handleObeliskUpdate() {
         if (activeObeliskGameObjects.size() != 2) {
             this.catalytic = null;
