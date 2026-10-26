@@ -27,7 +27,7 @@ dependencies {
 }
 
 group = 'com.hawolt.gotr'
-version = '1.0.6.6'
+version = '1.0.6.7'
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
