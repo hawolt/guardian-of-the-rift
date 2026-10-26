@@ -2,18 +2,18 @@ package com.hawolt.gotr.slices;
 
 import com.hawolt.gotr.AbstractPluginSlice;
 import com.hawolt.gotr.GuardianOfTheRiftOptimizerConfig;
-import com.hawolt.gotr.data.GameStartIndicator;
-import com.hawolt.gotr.data.MinigameState;
-import com.hawolt.gotr.data.StaticConstant;
+import com.hawolt.gotr.data.*;
 import com.hawolt.gotr.events.FragmentAmountUpdateEvent;
 import com.hawolt.gotr.events.minigame.impl.GameStartingSoonEvent;
 import com.hawolt.gotr.events.minigame.impl.MinigameStateEvent;
+import com.hawolt.gotr.events.minigame.impl.ObeliskUpdateEvent;
 import com.hawolt.gotr.events.minigame.impl.PortalSpawnEvent;
 import net.runelite.client.Notifier;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 
 import javax.inject.Inject;
+import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +25,7 @@ public class NotificationSlice extends AbstractPluginSlice {
     @Inject
     private ScheduledExecutorService executor;
 
+    private final String base = "The %s Obelisk%s has become active";
     private int lastKnownFragmentAmount = 0;
     private ScheduledFuture<?> future;
 
@@ -61,6 +62,32 @@ public class NotificationSlice extends AbstractPluginSlice {
         if (indicator == GameStartIndicator.OFF) return;
         if (indicator != event.getGameStartIndicator()) return;
         this.notifier.notify("The game will start in " + indicator);
+    }
+
+    private String normalizeObeliskName(Obelisk obelisk) {
+        if (obelisk == null) return "null";
+        return obelisk.name().charAt(0) + obelisk.name().substring(1).toLowerCase();
+    }
+
+    @Subscribe
+    public void onObeliskUpdateEvent(ObeliskUpdateEvent event) {
+        GuardianOfTheRiftOptimizerConfig config = plugin.getConfig();
+        Set<Obelisk> set = config.notifyOnObeliskType();
+        if (set.isEmpty()) return;
+        Obelisk catalyticObelisk = Obelisk.getObeliskByRuneIndexId(TypeAssociation.CATALYTIC, event.getCatalyticRuneEnumIndex());
+        Obelisk elementalObelisk = Obelisk.getObeliskByRuneIndexId(TypeAssociation.ELEMENTAL, event.getElementalRuneEnumIndex());
+        if (catalyticObelisk == null || elementalObelisk == null) return;
+        boolean bothObelisksActive = set.contains(catalyticObelisk) && set.contains(elementalObelisk);
+        String insertion = null;
+        if (bothObelisksActive) {
+            insertion = normalizeObeliskName(catalyticObelisk) + " and " + normalizeObeliskName(elementalObelisk);
+        } else if (set.contains(catalyticObelisk)) {
+            insertion = normalizeObeliskName(catalyticObelisk);
+        } else if (set.contains(elementalObelisk)) {
+            insertion = normalizeObeliskName(elementalObelisk);
+        }
+        if (insertion == null) return;
+        this.notifier.notify(String.format(base, insertion, bothObelisksActive ? "s" : ""));
     }
 
     @Subscribe

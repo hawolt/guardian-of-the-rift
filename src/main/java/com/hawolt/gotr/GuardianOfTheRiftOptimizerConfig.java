@@ -5,6 +5,9 @@ import net.runelite.client.config.*;
 import net.runelite.client.ui.overlay.OverlayPosition;
 
 import java.awt.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 
 @ConfigGroup("guardiansOfTheRiftOptimizer")
 public interface GuardianOfTheRiftOptimizerConfig extends Config {
@@ -221,6 +224,28 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
         return 0;
     }
 
+    @ConfigItem(
+            keyName = "",
+            name = "<html><div style='width:171px; text-align:center; color: white'>"
+                    + "<br>toggle a notification per Obelisk<br>to select multiple hold CTRL<br> "
+                    + "</div></html>",
+            description = "a thematic break for the configuration.",
+            position = 4,
+            section = notificationConfiguration
+    )
+    default void guidingHintLabel() {
+    }
+
+    @ConfigItem(
+            keyName = "notifyOnGuardianActive",
+            name = "Select Obelisks",
+            description = "Receive a Notification when a specific Obelisk becomes active",
+            position = 5,
+            section = notificationConfiguration
+    )
+    default Set<Obelisk> notifyOnObeliskType() {
+        return Collections.emptySet();
+    }
 
     @ConfigSection(
             position = 10,
