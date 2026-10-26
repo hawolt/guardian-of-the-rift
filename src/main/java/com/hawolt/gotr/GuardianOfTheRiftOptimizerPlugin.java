@@ -122,6 +122,7 @@ public class GuardianOfTheRiftOptimizerPlugin extends Plugin {
     private MinigameSlice minigameSlice;
 
     @Inject
+    @Getter(AccessLevel.PUBLIC)
     private ObeliskSlice obeliskSlice;
 
     @Inject

@@ -508,6 +508,17 @@ public interface GuardianOfTheRiftOptimizerConfig extends Config {
         return false;
     }
 
+    @ConfigItem(
+            keyName = "deprioritizeInactiveGuardians",
+            name = "Deprioritize inactive Guardians",
+            description = "Moves the options on inactive Guardians below Walk here unless you have a matching Talisman",
+            position = 8,
+            section = menuSwappingConfiguration
+    )
+    default boolean isDeprioritizeInactiveGuardians() {
+        return false;
+    }
+
     @ConfigSection(
             position = 6,
             name = "Miscellaneous",
